@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LifeSmart 씬 모드</title>
+  <style>
+    :root{
+      --text:#eef4ff; --muted:#a7b6d6; --line:rgba(255,255,255,.12);
+      --panel:rgba(255,255,255,.05); --panel2:rgba(255,255,255,.04);
+      --device-on:#6ee7b7; --device-off:#7f8ba3;
+      --room-glow: rgba(230,238,255,.18);
+      --wall-light: rgba(230,238,255,.10);
+      --floor-light: rgba(230,238,255,.08);
+      --ceiling-light: rgba(230,238,255,.14);
+      --screen-color: rgba(90,150,255,.40);
+      --blind-opacity: .78;
+      --ac-opacity: 1;
+      --ac-unit-opacity: 1;
+      --ac-flow: #8ee8ff;
+      --ambient-opacity: 1;
+      --person-opacity: 0;
+      --sensor-ring-opacity: 0;
+      --room-saturation: 1;
+      --badge-off: rgba(65,24,35,.84);
+      --badge-on: rgba(9,16,31,.72);
+      --badge-ac: rgba(9,16,31,.72);
+      --badge-screen: rgba(9,16,31,.72);
+      --badge-blind: rgba(9,16,31,.72);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:radial-gradient(circle at top left, rgba(88,220,255,.12), transparent 24%), radial-gradient(circle at top right, rgba(190,132,252,.10), transparent 20%), linear-gradient(180deg,#07101c,#091223 40%, #060b16 100%); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Pretendard","Noto Sans KR",sans-serif;}
+    body{min-height:100vh}
+    .wrap{width:min(1380px, calc(100% - 18px)); margin:0 auto; padding:10px 0 14px}
+    .layout{display:grid; grid-template-columns:240px minmax(760px,1fr) 250px; gap:12px; align-items:start}
+    .panel{background:linear-gradient(180deg, var(--panel), var(--panel2)); border:1px solid var(--line); border-radius:26px; box-shadow:0 28px 90px rgba(0,0,0,.38)}
+    .side,.right{padding:14px}
+    .center{padding:10px}
+    h2{font-size:17px; margin:0 0 10px; letter-spacing:-.02em}
+    .seg{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px}
+    .seg button,.scene-btn{appearance:none; border:1px solid var(--line); background:rgba(255,255,255,.045); color:var(--text); border-radius:16px; cursor:pointer; transition:.18s; }
+    .seg button{padding:12px 8px; font-size:14px; font-weight:700}
+    .seg button.active,.scene-btn.active{border-color:rgba(104,168,255,.55); background:linear-gradient(135deg, rgba(104,168,255,.18), rgba(88,220,255,.08));}
+    .scene-list{display:grid; gap:8px}
+    .scene-btn{padding:12px 12px; text-align:left}
+    .scene-btn b{display:block; font-size:15px; margin-bottom:2px}
+    .scene-btn span{display:block; font-size:12px; color:var(--muted)}
+    .scene-btn.hidden{display:none}
+    .kv{display:grid; gap:8px; margin-top:12px}
+    .row{display:flex; justify-content:space-between; gap:10px; align-items:center; padding:9px 10px; border-radius:13px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.06)}
+    .k{font-size:12px; color:var(--muted)} .v{font-size:13px; font-weight:700}
+    .viewer{padding:6px; min-height:650px}
+    .legend{display:flex; justify-content:space-between; gap:8px; align-items:center; margin-bottom:4px}
+    .chip{display:inline-flex; align-items:center; padding:8px 12px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,.05); font-size:13px}
+    #roomSvg{display:block; width:100%; height:auto; filter:saturate(var(--room-saturation))}
+    .devices{display:grid; gap:8px; margin-top:10px}
+    .device{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px 11px; border-radius:14px; border:1px solid rgba(255,255,255,.07); background:rgba(255,255,255,.035)}
+    .device .left{display:flex; align-items:center; gap:8px; font-size:14px}
+    .ico{width:30px; height:30px; border-radius:11px; display:grid; place-items:center; background:rgba(104,168,255,.13); border:1px solid rgba(104,168,255,.22); font-size:16px}
+    .state{display:inline-flex; align-items:center; gap:8px; font-size:12px}
+    .dot{width:9px; height:9px; border-radius:50%; background:var(--device-off)} .dot.on{background:var(--device-on); box-shadow:0 0 14px rgba(110,231,183,.55)}
+    .summary{display:grid; gap:8px; margin-top:10px}
+    .status{padding:12px; border-radius:16px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07)}
+    .status .label{font-size:12px; color:var(--muted); margin-bottom:6px}
+    .status .value{font-size:18px; font-weight:800; letter-spacing:-.02em}
+    .status .sub{font-size:12px; color:var(--muted); margin-top:4px}
+
+    #ambientGlow,#ambientWalls,#ambientFloor,#ambientCeiling,#videoScreen,#screenCast,#blindLeft,#blindRight,#personGroup,#sensorRing,#acFlowGroup,.light-fixture,.wallAccent,#screenLogoShape,#screenWave,#sensorBadge,#acPowerBadge,#screenBadge,#blindBadge,#acUnitGroup{transition:all .65s ease}
+    .ceiling-light-bar,.floor-pool,.wall-pool,.blind-slat{transition:all .7s ease}
+    .ac-flow-line{animation:breeze 1.4s linear infinite; opacity:var(--ac-opacity)}
+    @keyframes breeze{0%{transform:translateX(0); opacity:.2}40%{opacity:.7}100%{transform:translateX(-16px); opacity:.1}}
+    @media (max-width:1260px){.layout{grid-template-columns:220px 1fr}.right{grid-column:1/-1}}
+    @media (max-width:860px){.layout{grid-template-columns:1fr}.viewer{min-height:auto}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="layout">
+    <aside class="panel side">
+      <h2>구성</h2>
+      <div class="seg">
+        <button class="pkg-btn active" data-package="basic">실속형</button>
+        <button class="pkg-btn" data-package="premium">프리미엄</button>
+      </div>
+      <h2>모드</h2>
+      <div class="scene-list">
+        <button class="scene-btn active" data-scene="welcome"><b>영접모드</b><span>조명 · 화면 · 블라인드 · 에어컨</span></button>
+        <button class="scene-btn" data-scene="meeting"><b>회의모드</b><span>회의 준비 상태</span></button>
+        <button class="scene-btn premium-only" data-scene="presentation"><b>발표모드</b><span>화면 집중</span></button>
+        <button class="scene-btn premium-only" data-scene="focus"><b>집중모드</b><span>밝은 조명</span></button>
+        <button class="scene-btn premium-only" data-scene="rest"><b>휴식모드</b><span>낮은 밝기</span></button>
+        <button class="scene-btn" data-scene="off"><b>전체 OFF</b><span>전체 차단</span></button>
+      </div>
+      <div class="kv">
+        <div class="row"><div class="k">구성</div><div class="v" id="kvPackage">실속형</div></div>
+        <div class="row"><div class="k">조명</div><div class="v" id="kvLight">ON/OFF</div></div>
+        <div class="row"><div class="k">색온도</div><div class="v" id="kvTemp">-</div></div>
+        <div class="row"><div class="k">비디오 월</div><div class="v" id="kvScreen">로고</div></div>
+        <div class="row"><div class="k">블라인드</div><div class="v" id="kvBlind">열림</div></div>
+        <div class="row"><div class="k">에어컨</div><div class="v" id="kvAir">23°C / ON</div></div>
+      </div>
+    </aside>
+
+    <section class="panel center">
+      <div class="viewer">
+        <div class="legend">
+          <div class="chip">중앙 회의실</div>
+          <div class="chip" id="sceneTitle">실속형 · 영접모드</div>
+        </div>
+        <svg id="roomSvg" viewBox="90 145 820 505" aria-label="회의실">
+          <defs>
+            <linearGradient id="wallGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f405f"/><stop offset="100%" stop-color="#162338"/></linearGradient>
+            <linearGradient id="sideWallGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#394c70"/><stop offset="100%" stop-color="#17243b"/></linearGradient>
+            <linearGradient id="floorGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#21314b"/><stop offset="100%" stop-color="#0d1525"/></linearGradient>
+            <filter id="blur30" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="20" /></filter>
+            <filter id="blur14" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="10" /></filter>
+            <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="15" stdDeviation="18" flood-color="rgba(0,0,0,.4)" /></filter>
+          </defs>
+          <g id="roomBase">
+            <polygon points="180,170 820,170 940,290 60,290" fill="url(#wallGrad)" opacity=".96"/>
+            <polygon points="60,290 180,170 180,560 60,650" fill="url(#sideWallGrad)"/>
+            <polygon points="820,170 940,290 940,650 820,560" fill="#18253a"/>
+            <polygon points="180,560 820,560 940,650 60,650" fill="url(#floorGrad)"/>
+            <polygon points="60,290 940,290 820,560 180,560" fill="#111c2c" opacity=".28"/>
+          </g>
+          <ellipse id="ambientGlow" cx="500" cy="380" rx="340" ry="215" fill="var(--room-glow)" filter="url(#blur30)" opacity="var(--ambient-opacity)"/>
+          <polygon id="ambientCeiling" points="180,170 820,170 880,240 120,240" fill="var(--ceiling-light)" filter="url(#blur14)" opacity="var(--ambient-opacity)"/>
+          <polygon id="ambientWalls" points="86,312 915,312 825,518 176,518" fill="var(--wall-light)" filter="url(#blur14)" opacity="var(--ambient-opacity)"/>
+          <polygon id="ambientFloor" points="185,545 815,545 905,633 95,633" fill="var(--floor-light)" filter="url(#blur14)" opacity="var(--ambient-opacity)"/>
+          <g id="ceilingLights">
+            <rect class="light-fixture" x="300" y="195" width="140" height="22" rx="11" fill="#dfeeff" opacity=".72"/>
+            <rect class="light-fixture" x="560" y="195" width="140" height="22" rx="11" fill="#dfeeff" opacity=".72"/>
+            <ellipse class="ceiling-light-bar" cx="370" cy="235" rx="160" ry="40" fill="var(--ceiling-light)" filter="url(#blur14)"/>
+            <ellipse class="ceiling-light-bar" cx="630" cy="235" rx="160" ry="40" fill="var(--ceiling-light)" filter="url(#blur14)"/>
+          </g>
+          <g><rect x="220" y="205" width="560" height="230" rx="18" fill="#121c2e" opacity=".32"/><line class="wallAccent" x1="220" y1="440" x2="780" y2="440" stroke="rgba(255,255,255,.08)" stroke-width="4"/></g>
+          <g id="screenGroup" filter="url(#shadow)">
+            <rect x="345" y="222" width="310" height="175" rx="14" fill="#0b1321" stroke="rgba(255,255,255,.08)" stroke-width="4"/>
+            <rect id="videoScreen" x="360" y="237" width="280" height="145" rx="10" fill="#2c4b85" opacity=".96"/>
+            <rect id="screenCast" x="315" y="405" width="370" height="88" rx="26" fill="var(--screen-color)" filter="url(#blur30)" opacity=".34"/>
+            <g id="screenLogoShape" opacity="1"><circle cx="412" cy="310" r="22" fill="rgba(255,255,255,.9)" /><rect x="446" y="293" width="144" height="14" rx="7" fill="rgba(255,255,255,.92)"/><rect x="446" y="318" width="98" height="12" rx="6" fill="rgba(255,255,255,.7)"/></g>
+            <path id="screenWave" d="M382 322 C420 260, 520 260, 580 320 S640 360, 618 348" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="10" stroke-linecap="round" opacity="0"/>
+            <g id="screenBadge"><rect id="screenBadgeRect" x="575" y="248" width="52" height="28" rx="14" fill="rgba(9,16,31,.7)" stroke="rgba(255,255,255,.12)"/><text x="601" y="267" fill="#d9e8ff" font-size="13" font-weight="700" text-anchor="middle">ON</text></g>
+          </g>
+          <g id="windowGroup" filter="url(#shadow)">
+            <rect x="770" y="240" width="95" height="190" rx="8" fill="#3a4a63" stroke="rgba(255,255,255,.1)"/>
+            <rect x="785" y="255" width="64" height="160" rx="4" fill="#a2c9df" opacity=".38"/>
+            <g id="blindLeft" transform-origin="785px 255px"><rect x="786" y="255" width="30" height="160" fill="#cbd5e1" opacity="var(--blind-opacity)"/><g fill="#b6c4d4" opacity=".9"><rect class="blind-slat" x="786" y="258" width="30" height="8"/><rect class="blind-slat" x="786" y="280" width="30" height="8"/><rect class="blind-slat" x="786" y="302" width="30" height="8"/><rect class="blind-slat" x="786" y="324" width="30" height="8"/><rect class="blind-slat" x="786" y="346" width="30" height="8"/><rect class="blind-slat" x="786" y="368" width="30" height="8"/><rect class="blind-slat" x="786" y="390" width="30" height="8"/></g></g>
+            <g id="blindRight" transform-origin="849px 255px"><rect x="819" y="255" width="30" height="160" fill="#cbd5e1" opacity="var(--blind-opacity)"/><g fill="#b6c4d4" opacity=".9"><rect class="blind-slat" x="819" y="258" width="30" height="8"/><rect class="blind-slat" x="819" y="280" width="30" height="8"/><rect class="blind-slat" x="819" y="302" width="30" height="8"/><rect class="blind-slat" x="819" y="324" width="30" height="8"/><rect class="blind-slat" x="819" y="346" width="30" height="8"/><rect class="blind-slat" x="819" y="368" width="30" height="8"/><rect class="blind-slat" x="819" y="390" width="30" height="8"/></g></g>
+            <g id="blindBadge"><rect id="blindBadgeRect" x="796" y="209" width="57" height="28" rx="14" fill="rgba(9,16,31,.72)" stroke="rgba(255,255,255,.12)"/><text x="824" y="228" fill="#d9e8ff" font-size="12" font-weight="700" text-anchor="middle">OPEN</text></g>
+          </g>
+          <g id="acUnitGroup" filter="url(#shadow)" opacity="var(--ac-unit-opacity)">
+            <rect x="210" y="238" width="125" height="52" rx="12" fill="#e5edf7" />
+            <rect x="220" y="248" width="105" height="18" rx="8" fill="#cbd7e7" />
+            <rect x="220" y="271" width="105" height="6" rx="3" fill="#9fb0c7" />
+            <g id="acPowerBadge"><rect id="acBadgeRect" x="249" y="205" width="48" height="26" rx="13" fill="rgba(9,16,31,.72)" stroke="rgba(255,255,255,.12)"/><text x="273" y="223" fill="#d9e8ff" font-size="12" font-weight="700" text-anchor="middle">ON</text></g>
+            <g id="acFlowGroup"><path class="ac-flow-line" d="M245 292 C235 322, 230 354, 250 390" stroke="var(--ac-flow)" stroke-width="6" fill="none" stroke-linecap="round"/><path class="ac-flow-line" d="M273 292 C268 324, 270 358, 285 392" stroke="var(--ac-flow)" stroke-width="6" fill="none" stroke-linecap="round"/><path class="ac-flow-line" d="M302 292 C302 323, 312 355, 328 390" stroke="var(--ac-flow)" stroke-width="6" fill="none" stroke-linecap="round"/></g>
+          </g>
+          <g id="furniture" filter="url(#shadow)">
+            <ellipse class="floor-pool" cx="497" cy="522" rx="258" ry="65" fill="var(--floor-light)" filter="url(#blur14)" opacity=".9"/>
+            <path d="M272 455 C375 410, 625 410, 728 455 L650 548 C582 566, 418 566, 350 548 Z" fill="#1b2a41"/>
+            <path d="M288 452 C386 418, 614 418, 712 452 L647 523 C585 539, 415 539, 353 523 Z" fill="#2b415d"/>
+            <ellipse cx="500" cy="485" rx="188" ry="40" fill="rgba(255,255,255,.06)"/>
+            <rect x="472" y="525" width="56" height="75" rx="14" fill="#1e314a"/>
+            <polygon points="472,590 444,630 469,630 500,600 531,630 556,630 528,590" fill="#152436"/>
+            <g id="chairs" fill="#1e2b40"><path d="M242 475 C250 446, 284 432, 315 445 C330 452, 337 465, 336 484 L332 520 C330 536, 320 546, 304 549 L282 553 C261 557, 245 545, 242 523 Z"/><path d="M663 484 C662 464, 670 450, 685 443 C716 430, 750 444, 758 473 L755 521 C752 543, 736 557, 715 553 L693 549 C677 546, 667 536, 665 520 Z"/><path d="M357 555 C355 532, 374 515, 400 515 H430 C456 515, 475 532, 473 555 L470 590 C469 605, 456 616, 441 616 H389 C374 616, 361 605, 360 590 Z"/><path d="M527 555 C525 532, 544 515, 570 515 H600 C626 515, 645 532, 643 555 L640 590 C639 605, 626 616, 611 616 H559 C544 616, 531 605, 530 590 Z"/><path d="M178 535 C178 507, 200 490, 228 490 H255 C283 490, 305 507, 305 535 L303 570 C302 587, 288 600, 271 600 H212 C195 600, 181 587, 180 570 Z"/><path d="M695 535 C695 507, 717 490, 745 490 H772 C800 490, 822 507, 822 535 L820 570 C819 587, 805 600, 788 600 H729 C712 600, 698 587, 697 570 Z"/></g>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <aside class="panel right">
+      <h2>상태</h2>
+      <div class="summary">
+        <div class="status"><div class="label">현재</div><div class="value" id="statusTitle">실속형 · 영접모드</div><div class="sub" id="statusSub">조명 ON/OFF</div></div>
+        <div class="status"><div class="label">차이</div><div class="value" id="statusDiff">전원 ON/OFF</div><div class="sub" id="statusDiffSub">프리미엄 · 색온도 가능</div></div>
+      </div>
+      <div class="devices">
+        <div class="device"><div class="left"><div class="ico">💡</div><div>조명</div></div><div class="state"><span class="dot" id="dotLight"></span><span id="txtLight">ON</span></div></div>
+        <div class="device"><div class="left"><div class="ico">🖥️</div><div>비디오 월</div></div><div class="state"><span class="dot" id="dotScreen"></span><span id="txtScreen">ON</span></div></div>
+        <div class="device"><div class="left"><div class="ico">🪟</div><div>블라인드</div></div><div class="state"><span class="dot" id="dotBlind"></span><span id="txtBlind">OPEN</span></div></div>
+        <div class="device"><div class="left"><div class="ico">❄️</div><div>에어컨</div></div><div class="state"><span class="dot" id="dotAc"></span><span id="txtAc">ON</span></div></div>
+      </div>
+    </aside>
+  </div>
+</div>
+<script>
+const packageInfo = {
+  basic: { label:'실속형', lightMode:'ON/OFF', diff:'전원 ON/OFF', diffSub:'프리미엄 · 색온도 가능' },
+  premium: { label:'프리미엄', lightMode:'ON/OFF + 색온도', diff:'색온도 가능', diffSub:'2700K · 6500K' }
+};
+
+const sceneByPackage = {
+  basic: {
+    welcome: {
+      title:'영접모드', temp:'-', screen:'로고', blind:'열림', air:'23°C / ON', light:'ON/OFF', sub:'조명 ON · 로고 · 에어컨 23°C',
+      css:{roomGlow:'rgba(230,238,255,.18)', ceiling:'rgba(230,238,255,.14)', walls:'rgba(230,238,255,.10)', floor:'rgba(230,238,255,.08)', screenColor:'rgba(99,154,255,.48)', blindOpacity:'.72', ambientOpacity:'1', acOpacity:'1', acUnitOpacity:'1', acFlow:'#8ee8ff', saturation:'1'},
+      device:{light:true, screen:true, blind:'OPEN', ac:true}, screenMode:'welcome', blindLeft:'rotate(12)', blindRight:'rotate(-12)', blindBadge:'OPEN'
+    },
+    meeting: {
+      title:'회의모드', temp:'-', screen:'회의', blind:'반개방', air:'24°C / ON', light:'ON/OFF', sub:'조명 ON · 회의 화면 · 에어컨 24°C',
+      css:{roomGlow:'rgba(230,238,255,.20)', ceiling:'rgba(230,238,255,.15)', walls:'rgba(230,238,255,.11)', floor:'rgba(230,238,255,.08)', screenColor:'rgba(88,220,255,.34)', blindOpacity:'.82', ambientOpacity:'1', acOpacity:'1', acUnitOpacity:'1', acFlow:'#a9eeff', saturation:'1.02'},
+      device:{light:true, screen:true, blind:'HALF', ac:true}, screenMode:'meeting', blindLeft:'rotate(4)', blindRight:'rotate(-4)', blindBadge:'HALF'
+    },
+
+    off: {
+      title:'전체 OFF', temp:'-', screen:'OFF', blind:'닫힘', air:'OFF', light:'OFF', sub:'조명 OFF · 화면 OFF · 에어컨 OFF',
+      css:{roomGlow:'rgba(42,51,71,.10)', ceiling:'rgba(42,51,71,.06)', walls:'rgba(42,51,71,.05)', floor:'rgba(42,51,71,.05)', screenColor:'rgba(32,40,58,.18)', blindOpacity:'.90', ambientOpacity:'.25', acOpacity:'0', acUnitOpacity:'.45', acFlow:'#8ee8ff', saturation:'.76'},
+      device:{light:false, screen:false, blind:'CLOSE', ac:false}, screenMode:'off', blindLeft:'rotate(0)', blindRight:'rotate(0)', blindBadge:'CLOSE'
+    }
+  },
+  premium: {
+    welcome: {
+      title:'영접모드', temp:'2700K', screen:'로고', blind:'열림', air:'23°C / ON', light:'ON/OFF + 색온도', sub:'2700K · 따뜻한 조명 · 로고',
+      css:{roomGlow:'rgba(255,211,122,.36)', ceiling:'rgba(255,211,122,.26)', walls:'rgba(255,211,122,.18)', floor:'rgba(255,211,122,.14)', screenColor:'rgba(99,154,255,.60)', blindOpacity:'.72', ambientOpacity:'1', acOpacity:'1', acUnitOpacity:'1', acFlow:'#8ee8ff', saturation:'1.03'},
+      device:{light:true, screen:true, blind:'OPEN', ac:true}, screenMode:'welcome', blindLeft:'rotate(12)', blindRight:'rotate(-12)', blindBadge:'OPEN'
+    },
+    meeting: {
+      title:'회의모드', temp:'6500K', screen:'회의', blind:'반개방', air:'24°C / ON', light:'ON/OFF + 색온도', sub:'6500K · 청백 조명 · 회의 화면',
+      css:{roomGlow:'rgba(217,246,255,.38)', ceiling:'rgba(217,246,255,.30)', walls:'rgba(217,246,255,.18)', floor:'rgba(217,246,255,.12)', screenColor:'rgba(88,220,255,.44)', blindOpacity:'.82', ambientOpacity:'1', acOpacity:'1', acUnitOpacity:'1', acFlow:'#a9eeff', saturation:'1.08'},
+      device:{light:true, screen:true, blind:'HALF', ac:true}, screenMode:'meeting', blindLeft:'rotate(4)', blindRight:'rotate(-4)', blindBadge:'HALF'
+    },
+    presentation: {
+      title:'발표모드', temp:'3000K', screen:'발표', blind:'닫힘', air:'24°C / ON', light:'ON/OFF + 색온도', sub:'3000K · 화면 집중 · 주변 조도 낮춤',
+      css:{roomGlow:'rgba(255,220,150,.22)', ceiling:'rgba(255,220,150,.15)', walls:'rgba(255,220,150,.10)', floor:'rgba(255,220,150,.08)', screenColor:'rgba(90,150,255,.55)', blindOpacity:'.92', ambientOpacity:'.78', acOpacity:'1', acUnitOpacity:'1', acFlow:'#a9eeff', saturation:'1.02'},
+      device:{light:true, screen:true, blind:'CLOSE', ac:true}, screenMode:'meeting', blindLeft:'rotate(0)', blindRight:'rotate(0)', blindBadge:'CLOSE'
+    },
+    focus: {
+      title:'집중모드', temp:'6500K', screen:'업무', blind:'반개방', air:'23°C / ON', light:'ON/OFF + 색온도', sub:'6500K · 고조도 · 집중 업무',
+      css:{roomGlow:'rgba(217,246,255,.44)', ceiling:'rgba(217,246,255,.36)', walls:'rgba(217,246,255,.22)', floor:'rgba(217,246,255,.14)', screenColor:'rgba(88,220,255,.34)', blindOpacity:'.82', ambientOpacity:'1', acOpacity:'1', acUnitOpacity:'1', acFlow:'#a9eeff', saturation:'1.12'},
+      device:{light:true, screen:true, blind:'HALF', ac:true}, screenMode:'meeting', blindLeft:'rotate(4)', blindRight:'rotate(-4)', blindBadge:'HALF'
+    },
+    rest: {
+      title:'휴식모드', temp:'2700K', screen:'OFF', blind:'닫힘', air:'25°C / ON', light:'ON/OFF + 색온도', sub:'2700K · 낮은 밝기 · 대기 분위기',
+      css:{roomGlow:'rgba(255,211,122,.18)', ceiling:'rgba(255,211,122,.10)', walls:'rgba(255,211,122,.08)', floor:'rgba(255,211,122,.06)', screenColor:'rgba(32,40,58,.18)', blindOpacity:'.90', ambientOpacity:'.55', acOpacity:'1', acUnitOpacity:'1', acFlow:'#8ee8ff', saturation:'.92'},
+      device:{light:true, screen:false, blind:'CLOSE', ac:true}, screenMode:'off', blindLeft:'rotate(0)', blindRight:'rotate(0)', blindBadge:'CLOSE'
+    },
+    off: {
+      title:'전체 OFF', temp:'-', screen:'OFF', blind:'닫힘', air:'OFF', light:'OFF', sub:'조명 OFF · 화면 OFF · 에어컨 OFF',
+      css:{roomGlow:'rgba(42,51,71,.10)', ceiling:'rgba(42,51,71,.06)', walls:'rgba(42,51,71,.05)', floor:'rgba(42,51,71,.05)', screenColor:'rgba(32,40,58,.18)', blindOpacity:'.90', ambientOpacity:'.25', acOpacity:'0', acUnitOpacity:'.45', acFlow:'#8ee8ff', saturation:'.76'},
+      device:{light:false, screen:false, blind:'CLOSE', ac:false}, screenMode:'off', blindLeft:'rotate(0)', blindRight:'rotate(0)', blindBadge:'CLOSE'
+    }
+  }
+};
+
+let currentPackage = 'basic';
+let currentScene = 'welcome';
+
+const pkgButtons = [...document.querySelectorAll('.pkg-btn')];
+const sceneButtons = [...document.querySelectorAll('.scene-btn')];
+const root = document.documentElement;
+const q = sel => document.querySelector(sel);
+const els = {
+  sceneTitle:q('#sceneTitle'), statusTitle:q('#statusTitle'), statusSub:q('#statusSub'), statusDiff:q('#statusDiff'), statusDiffSub:q('#statusDiffSub'),
+  kvPackage:q('#kvPackage'), kvLight:q('#kvLight'), kvTemp:q('#kvTemp'), kvScreen:q('#kvScreen'), kvBlind:q('#kvBlind'), kvAir:q('#kvAir'),
+  dotLight:q('#dotLight'), dotScreen:q('#dotScreen'), dotBlind:q('#dotBlind'), dotAc:q('#dotAc'), txtLight:q('#txtLight'), txtScreen:q('#txtScreen'), txtBlind:q('#txtBlind'), txtAc:q('#txtAc'),
+  blindLeft:q('#blindLeft'), blindRight:q('#blindRight'), blindBadge:q('#blindBadge text'), blindBadgeRect:q('#blindBadgeRect'),
+  acBadge:q('#acPowerBadge text'), acBadgeRect:q('#acBadgeRect'), screenBadge:q('#screenBadge text'), screenBadgeRect:q('#screenBadgeRect'),
+  videoScreen:q('#videoScreen'), screenLogoShape:q('#screenLogoShape'), screenWave:q('#screenWave')
+};
+
+function setDot(el, on){el.classList.toggle('on', !!on)}
+
+function apply(){
+  if(!sceneByPackage[currentPackage][currentScene]) currentScene = 'welcome';
+  const pkg = packageInfo[currentPackage];
+  const s = sceneByPackage[currentPackage][currentScene];
+  pkgButtons.forEach(b=>b.classList.toggle('active', b.dataset.package===currentPackage));
+  sceneButtons.forEach(b=>{
+    b.classList.toggle('hidden', currentPackage === 'basic' && b.classList.contains('premium-only'));
+    b.classList.toggle('active', b.dataset.scene===currentScene);
+  });
+
+  root.style.setProperty('--room-glow', s.css.roomGlow);
+  root.style.setProperty('--ceiling-light', s.css.ceiling);
+  root.style.setProperty('--wall-light', s.css.walls);
+  root.style.setProperty('--floor-light', s.css.floor);
+  root.style.setProperty('--screen-color', s.css.screenColor);
+  root.style.setProperty('--blind-opacity', s.css.blindOpacity);
+  root.style.setProperty('--ambient-opacity', s.css.ambientOpacity);
+  root.style.setProperty('--ac-opacity', s.css.acOpacity);
+  root.style.setProperty('--ac-unit-opacity', s.css.acUnitOpacity);
+  root.style.setProperty('--ac-flow', s.css.acFlow);
+  root.style.setProperty('--room-saturation', s.css.saturation);
+
+  els.sceneTitle.textContent = `${pkg.label} · ${s.title}`;
+  els.statusTitle.textContent = `${pkg.label} · ${s.title}`;
+  els.statusSub.textContent = s.sub;
+  els.statusDiff.textContent = pkg.diff;
+  els.statusDiffSub.textContent = pkg.diffSub;
+
+  els.kvPackage.textContent = pkg.label;
+  els.kvLight.textContent = s.light;
+  els.kvTemp.textContent = s.temp;
+  els.kvScreen.textContent = s.screen;
+  els.kvBlind.textContent = s.blind;
+  els.kvAir.textContent = s.air;
+
+  setDot(els.dotLight, s.device.light); setDot(els.dotScreen, s.device.screen); setDot(els.dotBlind, s.device.blind !== 'CLOSE'); setDot(els.dotAc, s.device.ac);
+  els.txtLight.textContent = s.light;
+  els.txtScreen.textContent = s.device.screen ? 'ON' : 'OFF';
+  els.txtBlind.textContent = s.device.blind;
+  els.txtAc.textContent = s.device.ac ? 'ON' : 'OFF';
+
+  els.blindLeft.style.transform = s.blindLeft;
+  els.blindRight.style.transform = s.blindRight;
+  els.blindBadge.textContent = s.blindBadge;
+  els.acBadge.textContent = s.device.ac ? 'ON' : 'OFF';
+  els.screenBadgeRect.setAttribute('fill', s.device.screen ? 'rgba(9,16,31,.72)' : 'rgba(65,24,35,.82)');
+  els.acBadgeRect.setAttribute('fill', s.device.ac ? 'rgba(9,16,31,.72)' : 'rgba(65,24,35,.82)');
+  els.blindBadgeRect.setAttribute('fill', s.device.blind==='CLOSE' ? 'rgba(65,24,35,.82)' : 'rgba(9,16,31,.72)');
+
+  if(s.screenMode==='welcome'){
+    els.videoScreen.setAttribute('fill', currentPackage==='premium' ? '#476da8' : '#38577f');
+    els.videoScreen.setAttribute('opacity','.98');
+    els.screenLogoShape.setAttribute('opacity','1');
+    els.screenWave.setAttribute('opacity','0');
+    els.screenBadge.textContent='ON';
+  } else if(s.screenMode==='meeting'){
+    els.videoScreen.setAttribute('fill', currentPackage==='premium' ? '#284b67' : '#344a60');
+    els.videoScreen.setAttribute('opacity','.98');
+    els.screenLogoShape.setAttribute('opacity','.55');
+    els.screenWave.setAttribute('opacity','1');
+    els.screenBadge.textContent='MEET';
+  } else {
+    els.videoScreen.setAttribute('fill','#111827');
+    els.videoScreen.setAttribute('opacity','.68');
+    els.screenLogoShape.setAttribute('opacity','0');
+    els.screenWave.setAttribute('opacity','0');
+    els.screenBadge.textContent='OFF';
+  }
+}
+
+pkgButtons.forEach(btn=>btn.addEventListener('click', ()=>{currentPackage = btn.dataset.package; apply();}));
+sceneButtons.forEach(btn=>btn.addEventListener('click', ()=>{currentScene = btn.dataset.scene; apply();}));
+apply();
+</script>
+</body>
+</html>
