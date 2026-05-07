@@ -1,7 +1,8 @@
+<html lang="ko">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>LifeSmart 장면 시연</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>LifeSmart 모드 시연</title>
 <style>
 :root{
   --text:#eef4ff; --muted:#a7b6d6; --line:rgba(255,255,255,.13);
@@ -83,6 +84,109 @@ button{font-family:inherit}
 }
 </style>
 
+
+
+<style id="mobile-responsive-patch">
+/* 모바일·태블릿 대응 */
+@media (max-width:860px){
+  html{height:auto;min-height:100%;}
+  body{
+    min-height:100svh;
+    display:block;
+    overflow-x:hidden;
+    overflow-y:auto;
+    padding:10px;
+    -webkit-text-size-adjust:100%;
+  }
+  .wrap{
+    width:100%;
+    height:auto;
+    min-height:100svh;
+    display:block;
+    padding:0;
+  }
+  .layout{
+    width:100%;
+    height:auto;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .panel{border-radius:18px;box-shadow:0 16px 44px rgba(0,0,0,.32)}
+  .side,.right{padding:12px;overflow:visible;}
+  .center{padding:8px;min-height:auto;height:auto;}
+  h2{font-size:16px;margin-bottom:9px;}
+  .seg{grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;}
+  .seg button{min-height:46px;padding:10px 8px;font-size:12px;}
+  .scene-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;}
+  .scene-btn{min-height:58px;padding:10px 9px;}
+  .scene-btn b{font-size:13.5px;line-height:1.2;}
+  .scene-btn span{font-size:11.5px;line-height:1.25;}
+  .kv{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px;}
+  .kv .row{padding:8px 9px;min-height:42px;}
+  .k{font-size:11.5px;}
+  .v{font-size:12.5px;}
+  .viewer{height:auto;min-height:auto;}
+  .legend{gap:7px;margin-bottom:8px;}
+  .chip{font-size:12px;padding:8px 10px;}
+  #roomSvg{
+    width:100%;
+    height:auto;
+    max-height:none;
+    min-height:260px;
+    display:block;
+  }
+  .status{padding:11px;border-radius:14px;}
+  .status .value{font-size:16px;}
+  .devices{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;}
+  .device{padding:9px;border-radius:13px;min-height:48px;}
+  .device .left{gap:7px;font-size:12.5px;line-height:1.2;}
+  .ico{width:28px;height:28px;border-radius:9px;font-size:14px;flex:0 0 auto;}
+  .state{font-size:11.5px;gap:5px;}
+  .dot{width:8px;height:8px;}
+}
+
+@media (max-width:520px){
+  body{padding:8px;}
+  .layout{gap:8px;}
+  .panel{border-radius:16px;}
+  .side,.right{padding:10px;}
+  .seg button{font-size:11.5px;line-height:1.2;}
+  .scene-list{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .scene-btn{min-height:54px;padding:9px 8px;}
+  .scene-btn b{font-size:12.8px;}
+  .scene-btn span{font-size:10.8px;}
+  .kv{grid-template-columns:1fr 1fr;}
+  .kv .row{padding:7px 8px;}
+  .legend{flex-direction:column;align-items:stretch;}
+  .chip{width:100%;text-align:center;}
+  #roomSvg{min-height:240px;}
+  .devices{grid-template-columns:1fr;}
+  .device .left{font-size:13px;}
+}
+
+@media (max-width:380px){
+  .scene-list{grid-template-columns:1fr;}
+  .kv{grid-template-columns:1fr;}
+  #roomSvg{min-height:220px;}
+}
+
+@media (min-width:861px) and (max-width:1260px){
+  body{overflow:auto;align-items:flex-start;}
+  .wrap{height:auto;min-height:100vh;padding:12px 0;}
+  .layout{height:auto;grid-template-rows:auto auto;}
+  .center{min-height:620px;}
+  #roomSvg{max-height:600px;}
+  .right{overflow:visible;}
+  .devices{grid-template-columns:repeat(3,minmax(0,1fr));}
+}
+
+@media (pointer:coarse){
+  .side,.right{overflow:visible;}
+  .seg button,.scene-btn{touch-action:manipulation;}
+}
+</style>
+
 </head>
 <body>
 <div class="wrap"><div class="layout">
@@ -92,16 +196,16 @@ button{font-family:inherit}
       <button class="pkg-btn active" data-package="basic">스탠다드 제어형</button>
       <button class="pkg-btn" data-package="premium">프리미엄 공간제어형</button>
     </div>
-    <h2>장면</h2>
+    <h2>모드</h2>
     <div class="scene-list">
-      <button class="scene-btn active" data-scene="normal"><b>평소 장면</b><span>대기 상태</span></button>
-      <button class="scene-btn" data-scene="welcome"><b>고객응대 장면</b><span>기능 소개</span></button>
-      <button class="scene-btn" data-scene="meeting"><b>회의 장면</b><span>회의 진행</span></button>
-      <button class="scene-btn" data-scene="powersave"><b>절전 장면</b><span>필요 전기만 유지</span></button>
-      <button class="scene-btn premium-only" data-scene="presentation"><b>발표 장면</b><span>화면 집중</span></button>
-      <button class="scene-btn premium-only" data-scene="focus"><b>집중 장면</b><span>고조도 업무</span></button>
-      <button class="scene-btn premium-only" data-scene="rest"><b>휴식 장면</b><span>부드러운 조명</span></button>
-      <button class="scene-btn" data-scene="off"><b>전체 OFF</b><span>전체 차단</span></button>
+      <button class="scene-btn active" data-scene="normal"><b>기본 모드</b><span>기본 운영</span></button>
+      <button class="scene-btn" data-scene="welcome"><b>안내 모드</b><span>공간 소개</span></button>
+      <button class="scene-btn" data-scene="meeting"><b>회의 모드</b><span>회의 진행</span></button>
+      <button class="scene-btn" data-scene="powersave"><b>절전 모드</b><span>전력 사용 최소화</span></button>
+      <button class="scene-btn premium-only" data-scene="presentation"><b>발표 모드</b><span>화면 집중</span></button>
+      <button class="scene-btn premium-only" data-scene="focus"><b>집중 모드</b><span>밝은 업무 환경</span></button>
+      <button class="scene-btn premium-only" data-scene="rest"><b>휴식 모드</b><span>부드러운 조명</span></button>
+      <button class="scene-btn" data-scene="off"><b>종료 모드</b><span>전원 정리</span></button>
     </div>
     <div class="kv">
       <div class="row"><div class="k">구성</div><div class="v" id="kvPackage">스탠다드 제어형</div></div>
@@ -115,7 +219,7 @@ button{font-family:inherit}
   </aside>
 
   <section class="panel center"><div class="viewer">
-    <div class="legend"><div class="chip">시연 보기</div><div class="chip" id="sceneTitle">스탠다드 제어형 · 평소 장면</div></div>
+    <div class="legend"><div class="chip">모드 시연</div><div class="chip" id="sceneTitle">스탠다드 제어형 · 기본 모드</div></div>
     <svg id="roomSvg" viewBox="90 145 820 505" aria-label="회의실">
       <defs>
         <linearGradient id="wallGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f405f"/><stop offset="100%" stop-color="#162338"/></linearGradient>
@@ -229,7 +333,7 @@ button{font-family:inherit}
     <div class="summary">
       <div class="status">
         <div class="label">현재</div>
-        <div class="value" id="statusTitle">스탠다드 제어형 · 평소 장면</div>
+        <div class="value" id="statusTitle">스탠다드 제어형 · 기본 모드</div>
         <div class="sub" id="statusSub">비디오 월 OFF · 음향장비 OFF · 모니터 리프트 내림</div>
       </div>
     </div>
@@ -246,27 +350,27 @@ button{font-family:inherit}
 <script>
 const pkgInfo={basic:{label:'스탠다드 제어형'},premium:{label:'프리미엄 공간제어형'}};
 const off={
-  title:'전체 OFF', temp:'-', screen:'OFF', blind:'내림', air:'OFF', light:'OFF', lift:'내림',
-  sub:'모든 장비 OFF',
+  title:'종료 모드', temp:'-', screen:'OFF', blind:'내림', air:'OFF', light:'OFF', lift:'내림',
+  sub:'조명·화면·설비 전원 정리',
   css:{roomGlow:'rgba(80,90,110,.06)',ceiling:'rgba(80,90,110,.04)',walls:'rgba(80,90,110,.04)',floor:'rgba(80,90,110,.04)',screenColor:'rgba(40,46,58,.12)',ambient:'.15',acUnitOpacity:'.35',acFlow:'#7f8ba3',blindOpacity:'.92',filter:'saturate(0) brightness(.55)'},
   device:{screen:false,blind:'내림',ac:false,lift:false,pc:false,audio:false}, screenMode:'off', blindLeft:'rotate(0)', blindRight:'rotate(0)', liftY:58
 };
 const scenes={
   basic:{
-    normal:{title:'평소 장면',temp:'-',screen:'OFF',blind:'올림',air:'24°C / ON',light:'ON/OFF',lift:'내림',sub:'비디오 월 OFF · 음향장비 OFF · 모니터 리프트 내림',css:{roomGlow:'rgba(205,220,244,.16)',ceiling:'rgba(205,220,244,.12)',walls:'rgba(205,220,244,.09)',floor:'rgba(205,220,244,.07)',screenColor:'rgba(40,46,58,.18)',ambient:'.75',acUnitOpacity:'1',acFlow:'#8ee8ff',blindOpacity:'.80',filter:'saturate(.96) brightness(.9)'},device:{screen:false,blind:'올림',ac:true,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:58},
-    welcome:{title:'고객응대 장면',temp:'-',screen:'소개',blind:'올림',air:'23°C / ON',light:'ON/OFF',lift:'올림',sub:'기능 소개 · 비디오 월 ON · 모니터 리프트 올림',css:{roomGlow:'rgba(230,238,255,.18)',ceiling:'rgba(230,238,255,.14)',walls:'rgba(230,238,255,.10)',floor:'rgba(230,238,255,.08)',screenColor:'rgba(99,154,255,.48)',ambient:'1',acUnitOpacity:'1',acFlow:'#8ee8ff',blindOpacity:'.72',filter:'saturate(1) brightness(1)'},device:{screen:true,blind:'올림',ac:true,lift:true,pc:true,audio:true},screenMode:'welcome',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:0},
-    meeting:{title:'회의 장면',temp:'-',screen:'회의',blind:'올림',air:'24°C / ON',light:'ON/OFF',lift:'올림',sub:'회의 화면 · PC ON · 모니터 리프트 올림',css:{roomGlow:'rgba(230,238,255,.20)',ceiling:'rgba(230,238,255,.15)',walls:'rgba(230,238,255,.11)',floor:'rgba(230,238,255,.08)',screenColor:'rgba(88,220,255,.34)',ambient:'1',acUnitOpacity:'1',acFlow:'#a9eeff',blindOpacity:'.82',filter:'saturate(1.02) brightness(1)'},device:{screen:true,blind:'올림',ac:true,lift:true,pc:true,audio:true},screenMode:'meeting',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:0},
-    powersave:{title:'절전 장면',temp:'-',screen:'OFF',blind:'내림',air:'OFF',light:'최소',lift:'내림',sub:'필요 전기만 유지 · 비필수 장비 OFF',css:{roomGlow:'rgba(120,132,160,.09)',ceiling:'rgba(120,132,160,.07)',walls:'rgba(120,132,160,.05)',floor:'rgba(120,132,160,.04)',screenColor:'rgba(40,46,58,.12)',ambient:'.28',acUnitOpacity:'.45',acFlow:'#7f8ba3',blindOpacity:'.92',filter:'saturate(.45) brightness(.65)'},device:{screen:false,blind:'내림',ac:false,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(0)',blindRight:'rotate(0)',liftY:58},
+    normal:{title:'기본 모드',temp:'-',screen:'OFF',blind:'올림',air:'24°C / ON',light:'ON/OFF',lift:'내림',sub:'비디오 월 OFF · 음향장비 OFF · 모니터 리프트 내림',css:{roomGlow:'rgba(205,220,244,.16)',ceiling:'rgba(205,220,244,.12)',walls:'rgba(205,220,244,.09)',floor:'rgba(205,220,244,.07)',screenColor:'rgba(40,46,58,.18)',ambient:'.75',acUnitOpacity:'1',acFlow:'#8ee8ff',blindOpacity:'.80',filter:'saturate(.96) brightness(.9)'},device:{screen:false,blind:'올림',ac:true,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:58},
+    welcome:{title:'안내 모드',temp:'-',screen:'소개',blind:'올림',air:'23°C / ON',light:'ON/OFF',lift:'올림',sub:'공간 소개 · 비디오 월 ON · 모니터 리프트 올림',css:{roomGlow:'rgba(230,238,255,.18)',ceiling:'rgba(230,238,255,.14)',walls:'rgba(230,238,255,.10)',floor:'rgba(230,238,255,.08)',screenColor:'rgba(99,154,255,.48)',ambient:'1',acUnitOpacity:'1',acFlow:'#8ee8ff',blindOpacity:'.72',filter:'saturate(1) brightness(1)'},device:{screen:true,blind:'올림',ac:true,lift:true,pc:true,audio:true},screenMode:'welcome',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:0},
+    meeting:{title:'회의 모드',temp:'-',screen:'회의',blind:'올림',air:'24°C / ON',light:'ON/OFF',lift:'올림',sub:'회의 화면 · PC ON · 모니터 리프트 올림',css:{roomGlow:'rgba(230,238,255,.20)',ceiling:'rgba(230,238,255,.15)',walls:'rgba(230,238,255,.11)',floor:'rgba(230,238,255,.08)',screenColor:'rgba(88,220,255,.34)',ambient:'1',acUnitOpacity:'1',acFlow:'#a9eeff',blindOpacity:'.82',filter:'saturate(1.02) brightness(1)'},device:{screen:true,blind:'올림',ac:true,lift:true,pc:true,audio:true},screenMode:'meeting',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:0},
+    powersave:{title:'절전 모드',temp:'-',screen:'OFF',blind:'내림',air:'OFF',light:'최소',lift:'내림',sub:'필요 전기만 유지 · 비필수 장비 OFF',css:{roomGlow:'rgba(120,132,160,.09)',ceiling:'rgba(120,132,160,.07)',walls:'rgba(120,132,160,.05)',floor:'rgba(120,132,160,.04)',screenColor:'rgba(40,46,58,.12)',ambient:'.28',acUnitOpacity:'.45',acFlow:'#7f8ba3',blindOpacity:'.92',filter:'saturate(.45) brightness(.65)'},device:{screen:false,blind:'내림',ac:false,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(0)',blindRight:'rotate(0)',liftY:58},
     off
   },
   premium:{
-    normal:{title:'평소 장면',temp:'3500K',screen:'OFF',blind:'올림',air:'24°C / ON',light:'색온도',lift:'내림',sub:'비디오 월 OFF · 음향장비 OFF · 모니터 리프트 내림',css:{roomGlow:'rgba(232,226,208,.18)',ceiling:'rgba(232,226,208,.13)',walls:'rgba(232,226,208,.10)',floor:'rgba(232,226,208,.08)',screenColor:'rgba(40,46,58,.18)',ambient:'.78',acUnitOpacity:'1',acFlow:'#8ee8ff',blindOpacity:'.80',filter:'saturate(1) brightness(.92)'},device:{screen:false,blind:'올림',ac:true,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:58},
-    welcome:{title:'고객응대 장면',temp:'2700K',screen:'소개',blind:'올림',air:'23°C / ON',light:'색온도',lift:'올림',sub:'기능 소개 · 색온도 시연 · 모니터 리프트 올림',css:{roomGlow:'rgba(255,211,122,.36)',ceiling:'rgba(255,211,122,.26)',walls:'rgba(255,211,122,.18)',floor:'rgba(255,211,122,.14)',screenColor:'rgba(99,154,255,.60)',ambient:'1',acUnitOpacity:'1',acFlow:'#8ee8ff',blindOpacity:'.72',filter:'saturate(1.04) brightness(1)'},device:{screen:true,blind:'올림',ac:true,lift:true,pc:true,audio:true},screenMode:'welcome',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:0},
-    meeting:{title:'회의 장면',temp:'6500K',screen:'회의',blind:'올림',air:'24°C / ON',light:'색온도',lift:'올림',sub:'6500K · 회의 화면 · 모니터 리프트 올림',css:{roomGlow:'rgba(217,246,255,.38)',ceiling:'rgba(217,246,255,.30)',walls:'rgba(217,246,255,.18)',floor:'rgba(217,246,255,.12)',screenColor:'rgba(88,220,255,.44)',ambient:'1',acUnitOpacity:'1',acFlow:'#a9eeff',blindOpacity:'.82',filter:'saturate(1.08) brightness(1)'},device:{screen:true,blind:'올림',ac:true,lift:true,pc:true,audio:true},screenMode:'meeting',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:0},
-    powersave:{title:'절전 장면',temp:'-',screen:'OFF',blind:'내림',air:'OFF',light:'최소',lift:'내림',sub:'필요 전기만 유지 · 비필수 장비 OFF',css:{roomGlow:'rgba(120,132,160,.09)',ceiling:'rgba(120,132,160,.07)',walls:'rgba(120,132,160,.05)',floor:'rgba(120,132,160,.04)',screenColor:'rgba(40,46,58,.12)',ambient:'.28',acUnitOpacity:'.45',acFlow:'#7f8ba3',blindOpacity:'.92',filter:'saturate(.45) brightness(.65)'},device:{screen:false,blind:'내림',ac:false,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(0)',blindRight:'rotate(0)',liftY:58},
-    presentation:{title:'발표 장면',temp:'3000K',screen:'발표',blind:'내림',air:'24°C / ON',light:'색온도',lift:'올림',sub:'3000K · 화면 집중 · 발표용',css:{roomGlow:'rgba(255,220,150,.20)',ceiling:'rgba(255,220,150,.14)',walls:'rgba(255,220,150,.09)',floor:'rgba(255,220,150,.06)',screenColor:'rgba(90,150,255,.55)',ambient:'.78',acUnitOpacity:'1',acFlow:'#a9eeff',blindOpacity:'.92',filter:'saturate(1.02) brightness(.92)'},device:{screen:true,blind:'내림',ac:true,lift:true,pc:true,audio:true},screenMode:'presentation',blindLeft:'rotate(0)',blindRight:'rotate(0)',liftY:0},
-    focus:{title:'집중 장면',temp:'6500K',screen:'업무',blind:'올림',air:'23°C / ON',light:'색온도',lift:'올림',sub:'6500K · 고조도 · 음향 OFF',css:{roomGlow:'rgba(217,246,255,.44)',ceiling:'rgba(217,246,255,.36)',walls:'rgba(217,246,255,.22)',floor:'rgba(217,246,255,.14)',screenColor:'rgba(88,220,255,.34)',ambient:'1',acUnitOpacity:'1',acFlow:'#a9eeff',blindOpacity:'.82',filter:'saturate(1.12) brightness(1.04)'},device:{screen:true,blind:'올림',ac:true,lift:true,pc:true,audio:false},screenMode:'meeting',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:0},
-    rest:{title:'휴식 장면',temp:'2700K',screen:'OFF',blind:'내림',air:'25°C / ON',light:'색온도',lift:'내림',sub:'2700K · 낮은 밝기 · 휴식',css:{roomGlow:'rgba(255,211,122,.18)',ceiling:'rgba(255,211,122,.10)',walls:'rgba(255,211,122,.08)',floor:'rgba(255,211,122,.06)',screenColor:'rgba(32,40,58,.18)',ambient:'.55',acUnitOpacity:'1',acFlow:'#8ee8ff',blindOpacity:'.90',filter:'saturate(.92) brightness(.86)'},device:{screen:false,blind:'내림',ac:true,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(0)',blindRight:'rotate(0)',liftY:58},
+    normal:{title:'기본 모드',temp:'3500K',screen:'OFF',blind:'올림',air:'24°C / ON',light:'색온도',lift:'내림',sub:'비디오 월 OFF · 음향장비 OFF · 모니터 리프트 내림',css:{roomGlow:'rgba(232,226,208,.18)',ceiling:'rgba(232,226,208,.13)',walls:'rgba(232,226,208,.10)',floor:'rgba(232,226,208,.08)',screenColor:'rgba(40,46,58,.18)',ambient:'.78',acUnitOpacity:'1',acFlow:'#8ee8ff',blindOpacity:'.80',filter:'saturate(1) brightness(.92)'},device:{screen:false,blind:'올림',ac:true,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:58},
+    welcome:{title:'안내 모드',temp:'2700K',screen:'소개',blind:'올림',air:'23°C / ON',light:'색온도',lift:'올림',sub:'공간 소개 · 색온도 시연 · 모니터 리프트 올림',css:{roomGlow:'rgba(255,211,122,.36)',ceiling:'rgba(255,211,122,.26)',walls:'rgba(255,211,122,.18)',floor:'rgba(255,211,122,.14)',screenColor:'rgba(99,154,255,.60)',ambient:'1',acUnitOpacity:'1',acFlow:'#8ee8ff',blindOpacity:'.72',filter:'saturate(1.04) brightness(1)'},device:{screen:true,blind:'올림',ac:true,lift:true,pc:true,audio:true},screenMode:'welcome',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:0},
+    meeting:{title:'회의 모드',temp:'6500K',screen:'회의',blind:'올림',air:'24°C / ON',light:'색온도',lift:'올림',sub:'6500K · 회의 화면 · 모니터 리프트 올림',css:{roomGlow:'rgba(217,246,255,.38)',ceiling:'rgba(217,246,255,.30)',walls:'rgba(217,246,255,.18)',floor:'rgba(217,246,255,.12)',screenColor:'rgba(88,220,255,.44)',ambient:'1',acUnitOpacity:'1',acFlow:'#a9eeff',blindOpacity:'.82',filter:'saturate(1.08) brightness(1)'},device:{screen:true,blind:'올림',ac:true,lift:true,pc:true,audio:true},screenMode:'meeting',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:0},
+    powersave:{title:'절전 모드',temp:'-',screen:'OFF',blind:'내림',air:'OFF',light:'최소',lift:'내림',sub:'필요 전기만 유지 · 비필수 장비 OFF',css:{roomGlow:'rgba(120,132,160,.09)',ceiling:'rgba(120,132,160,.07)',walls:'rgba(120,132,160,.05)',floor:'rgba(120,132,160,.04)',screenColor:'rgba(40,46,58,.12)',ambient:'.28',acUnitOpacity:'.45',acFlow:'#7f8ba3',blindOpacity:'.92',filter:'saturate(.45) brightness(.65)'},device:{screen:false,blind:'내림',ac:false,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(0)',blindRight:'rotate(0)',liftY:58},
+    presentation:{title:'발표 모드',temp:'3000K',screen:'발표',blind:'내림',air:'24°C / ON',light:'색온도',lift:'올림',sub:'3000K · 화면 집중 · 발표용',css:{roomGlow:'rgba(255,220,150,.20)',ceiling:'rgba(255,220,150,.14)',walls:'rgba(255,220,150,.09)',floor:'rgba(255,220,150,.06)',screenColor:'rgba(90,150,255,.55)',ambient:'.78',acUnitOpacity:'1',acFlow:'#a9eeff',blindOpacity:'.92',filter:'saturate(1.02) brightness(.92)'},device:{screen:true,blind:'내림',ac:true,lift:true,pc:true,audio:true},screenMode:'presentation',blindLeft:'rotate(0)',blindRight:'rotate(0)',liftY:0},
+    focus:{title:'집중 모드',temp:'6500K',screen:'업무',blind:'올림',air:'23°C / ON',light:'색온도',lift:'올림',sub:'6500K · 고조도 · 음향 OFF',css:{roomGlow:'rgba(217,246,255,.44)',ceiling:'rgba(217,246,255,.36)',walls:'rgba(217,246,255,.22)',floor:'rgba(217,246,255,.14)',screenColor:'rgba(88,220,255,.34)',ambient:'1',acUnitOpacity:'1',acFlow:'#a9eeff',blindOpacity:'.82',filter:'saturate(1.12) brightness(1.04)'},device:{screen:true,blind:'올림',ac:true,lift:true,pc:true,audio:false},screenMode:'meeting',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:0},
+    rest:{title:'휴식 모드',temp:'2700K',screen:'OFF',blind:'내림',air:'25°C / ON',light:'색온도',lift:'내림',sub:'2700K · 낮은 밝기 · 휴식',css:{roomGlow:'rgba(255,211,122,.18)',ceiling:'rgba(255,211,122,.10)',walls:'rgba(255,211,122,.08)',floor:'rgba(255,211,122,.06)',screenColor:'rgba(32,40,58,.18)',ambient:'.55',acUnitOpacity:'1',acFlow:'#8ee8ff',blindOpacity:'.90',filter:'saturate(.92) brightness(.86)'},device:{screen:false,blind:'내림',ac:true,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(0)',blindRight:'rotate(0)',liftY:58},
     off
   }
 };
