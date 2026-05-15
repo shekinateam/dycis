@@ -1,25 +1,27 @@
 <html lang="ko">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>LifeSmart 모드 시연</title>
 <style>
 :root{
-  --text:#eef4ff; --muted:#a7b6d6; --line:rgba(255,255,255,.13);
-  --panel:rgba(255,255,255,.055); --panel2:rgba(255,255,255,.035);
-  --on:#6ee7b7; --on-bg:rgba(28,176,118,.22); --off:#fb7185; --off-bg:rgba(251,113,133,.18);
-  --room-glow:rgba(230,238,255,.18); --wall-light:rgba(230,238,255,.10); --floor-light:rgba(230,238,255,.08); --ceiling-light:rgba(230,238,255,.14);
-  --screen-color:rgba(90,150,255,.42); --ambient:1; --ac-unit-opacity:1; --ac-flow:#8ee8ff; --blind-opacity:.78; --room-filter:saturate(1) brightness(1);
+  --text:#eef4ff;--muted:#a7b6d6;--line:rgba(255,255,255,.13);
+  --panel:rgba(255,255,255,.055);--panel2:rgba(255,255,255,.035);
+  --on:#6ee7b7;--off:#fb7185;
+  --room-glow:rgba(230,238,255,.18);--wall-light:rgba(230,238,255,.10);
+  --floor-light:rgba(230,238,255,.08);--ceiling-light:rgba(230,238,255,.14);
+  --screen-color:rgba(90,150,255,.42);--ambient:1;--ac-unit-opacity:1;
+  --ac-flow:#8ee8ff;--blind-opacity:.78;--room-filter:saturate(1) brightness(1);
 }
 *{box-sizing:border-box}
 body{margin:0;background:radial-gradient(circle at 16% 0%,rgba(88,220,255,.12),transparent 26%),linear-gradient(180deg,#08101f,#07101d 60%,#050913);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Pretendard","Noto Sans KR",sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.wrap{width:min(1480px,calc(100vw - 24px));height:min(900px,calc(100vh - 24px));margin:0 auto;padding:0;display:flex;align-items:center;justify-content:center}
+.wrap{width:min(1480px,calc(100vw - 24px));height:min(900px,calc(100vh - 24px));margin:0 auto;display:flex;align-items:center;justify-content:center}
 .layout{width:100%;height:100%;display:grid;grid-template-columns:250px minmax(760px,1fr) 270px;gap:12px;align-items:stretch}
 .panel{border:1px solid var(--line);background:linear-gradient(180deg,var(--panel),var(--panel2));border-radius:24px;box-shadow:0 26px 80px rgba(0,0,0,.36)}
 .side,.right{padding:14px;overflow:auto}.center{padding:10px;display:flex;min-height:0}
 h2{font-size:17px;margin:0 0 10px}
-.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 button{font-family:inherit}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 .seg button,.scene-btn{appearance:none;border:1px solid var(--line);background:rgba(255,255,255,.045);color:var(--text);border-radius:15px;cursor:pointer;transition:.18s}
 .seg button{padding:11px 6px;font-size:12px;font-weight:800;line-height:1.25;word-break:keep-all}
 .seg button.active,.scene-btn.active{border-color:rgba(110,231,183,.55);background:linear-gradient(135deg,rgba(110,231,183,.18),rgba(88,220,255,.06))}
@@ -30,10 +32,8 @@ button{font-family:inherit}
 .scene-btn.hidden{display:none}
 .kv{display:grid;gap:8px;margin-top:12px}
 .kv .row{display:flex;justify-content:space-between;gap:10px;padding:9px 10px;border:1px solid rgba(255,255,255,.07);border-radius:13px;background:rgba(255,255,255,.035)}
-.k{font-size:12px;color:var(--muted)}
-.v{font-size:13px;font-weight:800;text-align:right}
-.v.on{color:var(--on)}
-.v.off{color:var(--off)}
+.k{font-size:12px;color:var(--muted)}.v{font-size:13px;font-weight:800;text-align:right}
+.v.on{color:var(--on)}.v.off{color:var(--off)}
 .viewer{padding:6px;min-height:0;height:100%;width:100%;display:flex;flex-direction:column}
 .legend{display:flex;justify-content:space-between;gap:8px;margin-bottom:4px;flex:0 0 auto}
 .chip{border:1px solid var(--line);background:rgba(255,255,255,.05);padding:8px 12px;border-radius:999px;font-size:13px;font-weight:700}
@@ -51,405 +51,442 @@ button{font-family:inherit}
 .state{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:900}
 .dot{width:9px;height:9px;border-radius:50%;background:#7f8ba3}
 .dot.on{background:var(--on);box-shadow:0 0 14px rgba(110,231,183,.6)}
-.state.on{color:var(--on)}
-.state.off{color:var(--off)}
+.state.on{color:var(--on)}.state.off{color:var(--off)}
+
+/* 환경 센서 패널 */
+.env-sensor{margin-top:10px;border:1px solid rgba(110,231,183,.22);border-radius:16px;background:rgba(110,231,183,.04);overflow:hidden}
+.env-header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px 6px}
+.env-title{font-size:12px;font-weight:800;color:var(--on);letter-spacing:.04em}
+.auto-toggle{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);cursor:pointer;user-select:none}
+.toggle-track{width:34px;height:18px;border-radius:9px;background:rgba(255,255,255,.12);border:1px solid var(--line);position:relative;transition:.25s;cursor:pointer;flex-shrink:0}
+.toggle-track.on{background:rgba(28,176,118,.55);border-color:rgba(110,231,183,.4)}
+.toggle-thumb{width:12px;height:12px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:.25s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.toggle-track.on .toggle-thumb{left:18px}
+.env-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:rgba(255,255,255,.07)}
+.env-cell{background:#07101d;padding:10px 8px;text-align:center}
+.ec-label{font-size:10px;color:var(--muted);margin-bottom:4px}
+.ec-val{font-size:18px;font-weight:900;line-height:1}
+.ec-unit{font-size:10px;color:var(--muted);margin-top:2px}
+.ec-val.warn{color:#fbbf24}
+.ec-val.hot{color:#fb7185;animation:pulse-red .8s ease-in-out infinite}
+.ec-val.low{color:#38bdf8}
+@keyframes pulse-red{0%,100%{opacity:1}50%{opacity:.5}}
+.temp-bar-wrap{padding:0 12px 8px}
+.temp-bar-label{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:4px}
+.temp-bar-bg{height:6px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden}
+.temp-bar-fill{height:100%;border-radius:3px;transition:width .8s ease,background .5s ease}
+
+/* 목표치 설정 */
+.target-settings{border-top:1px solid rgba(255,255,255,.07)}
+.ts-header{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;font-size:11.5px;font-weight:700;color:var(--muted);cursor:pointer;user-select:none;transition:.15s}
+.ts-header:hover{color:var(--text)}
+.ts-body{padding:2px 10px 10px;display:none}
+.ts-body.open{display:block}
+.ts-row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.ts-row:last-child{border-bottom:none}
+.ts-label{font-size:11px;color:var(--muted)}
+.ts-ctrl{display:flex;align-items:center;gap:7px}
+.ts-val{font-size:12px;font-weight:900;min-width:46px;text-align:center}
+.ts-btn{appearance:none;background:rgba(255,255,255,.07);border:1px solid var(--line);color:var(--text);width:22px;height:22px;border-radius:6px;cursor:pointer;font-size:15px;font-weight:700;display:grid;place-items:center;transition:.15s;padding:0;line-height:1}
+.ts-btn:hover{background:rgba(255,255,255,.15)}
+
+.auto-status{padding:6px 12px 10px;font-size:11.5px;font-weight:700;display:flex;align-items:center;gap:6px}
+.auto-status .as-dot{width:7px;height:7px;border-radius:50%;background:#7f8ba3;flex-shrink:0}
+.auto-status.active{color:var(--on)}
+.auto-status.active .as-dot{background:var(--on);box-shadow:0 0 8px rgba(110,231,183,.7);animation:blink .9s ease-in-out infinite}
+.auto-status.warn-state{color:#fbbf24}
+.auto-status.warn-state .as-dot{background:#fbbf24}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
 
 /* SVG */
-#ambientGlow,#ambientWalls,#ambientFloor,#ambientCeiling,#videoScreen,#screenCast,#blindLeft,#blindRight,#acUnitGroup,#pcGroup,#audioGroup,#pcBadge,#audioBadge,#screenBadge,#acPowerBadge,#blindBadge,#liftGroup,#liftBadge,#liftMonitorGroup,#liftStem,#screenLabel,#blindLabel,#acLabel,#liftLabel,.svg-label,.svg-status{transition:all .55s ease}
+#ambientGlow,#ambientWalls,#ambientFloor,#ambientCeiling,#videoScreen,#screenCast,
+#blindLeft,#blindRight,#acUnitGroup,#pcGroup,#audioGroup,#pcBadge,#audioBadge,
+#screenBadge,#acPowerBadge,#blindBadge,#liftGroup,#liftBadge,#liftMonitorGroup,
+#liftStem,#envBadge,.svg-label,.svg-status{transition:all .55s ease}
 #acFlowGroup{transition:opacity .35s ease}
 .ac-flow-line{animation:breeze 1.25s linear infinite}
 @keyframes breeze{0%{transform:translateX(0);opacity:.15}45%{opacity:.85}100%{transform:translateX(-18px);opacity:.06}}
 .audio-wave{animation:wave 1.2s ease-in-out infinite;transform-origin:660px 500px}
 .audio-wave.off{animation:none;opacity:.14}
 @keyframes wave{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.18);opacity:.95}}
-.pc-screen-on{filter:drop-shadow(0 0 14px rgba(110,231,183,.5))}
 .svg-status.on rect{fill:rgba(28,176,118,.90)}
 .svg-status.off rect{fill:rgba(98,40,50,.92)}
 .svg-status text{fill:#fff;font-weight:900}
 .svg-label rect{fill:rgba(9,16,31,.78);stroke:rgba(255,255,255,.14)}
 .svg-label text{fill:#eaf3ff;font-weight:900;font-size:14px}
 
-@media(max-width:1260px){.layout{grid-template-columns:220px 1fr}.right{grid-column:1/-1}}
-@media(max-width:860px){.layout{grid-template-columns:1fr}.viewer{min-height:auto}}
-</style>
-
-<style id="fullscreen-fit-patch">
-@media (min-width:1261px){
-  body{display:flex;align-items:center;justify-content:center;overflow:hidden;}
-  .wrap{width:min(1480px,calc(100vw - 24px));height:min(900px,calc(100vh - 24px));display:flex;align-items:center;justify-content:center;padding:0;}
-  .layout{width:100%;height:100%;align-items:stretch;}
-  .center{display:flex;min-height:0;}
-  .viewer{height:100%;width:100%;display:flex;flex-direction:column;min-height:0;}
-  #roomSvg{width:100%;height:100%;max-height:calc(100vh - 96px);margin:auto;}
+@media(max-width:860px){
+  body{display:block;overflow-y:auto;padding:10px;min-height:100svh}
+  .wrap,.layout{width:100%;height:auto;display:block}
+  .layout{display:flex;flex-direction:column;gap:10px}
+  .center,.viewer{height:auto;min-height:auto}
+  #roomSvg{max-height:none;min-height:260px}
+  .devices{grid-template-columns:repeat(2,1fr)}
+  .scene-list{grid-template-columns:repeat(2,1fr)}
 }
 </style>
-
-
-
-<style id="mobile-responsive-patch">
-/* 모바일·태블릿 대응 */
-@media (max-width:860px){
-  html{height:auto;min-height:100%;}
-  body{
-    min-height:100svh;
-    display:block;
-    overflow-x:hidden;
-    overflow-y:auto;
-    padding:10px;
-    -webkit-text-size-adjust:100%;
-  }
-  .wrap{
-    width:100%;
-    height:auto;
-    min-height:100svh;
-    display:block;
-    padding:0;
-  }
-  .layout{
-    width:100%;
-    height:auto;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-  }
-  .panel{border-radius:18px;box-shadow:0 16px 44px rgba(0,0,0,.32)}
-  .side,.right{padding:12px;overflow:visible;}
-  .center{padding:8px;min-height:auto;height:auto;}
-  h2{font-size:16px;margin-bottom:9px;}
-  .seg{grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;}
-  .seg button{min-height:46px;padding:10px 8px;font-size:12px;}
-  .scene-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;}
-  .scene-btn{min-height:58px;padding:10px 9px;}
-  .scene-btn b{font-size:13.5px;line-height:1.2;}
-  .scene-btn span{font-size:11.5px;line-height:1.25;}
-  .kv{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px;}
-  .kv .row{padding:8px 9px;min-height:42px;}
-  .k{font-size:11.5px;}
-  .v{font-size:12.5px;}
-  .viewer{height:auto;min-height:auto;}
-  .legend{gap:7px;margin-bottom:8px;}
-  .chip{font-size:12px;padding:8px 10px;}
-  #roomSvg{
-    width:100%;
-    height:auto;
-    max-height:none;
-    min-height:260px;
-    display:block;
-  }
-  .status{padding:11px;border-radius:14px;}
-  .status .value{font-size:16px;}
-  .devices{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;}
-  .device{padding:9px;border-radius:13px;min-height:48px;}
-  .device .left{gap:7px;font-size:12.5px;line-height:1.2;}
-  .ico{width:28px;height:28px;border-radius:9px;font-size:14px;flex:0 0 auto;}
-  .state{font-size:11.5px;gap:5px;}
-  .dot{width:8px;height:8px;}
-}
-
-@media (max-width:520px){
-  body{padding:8px;}
-  .layout{gap:8px;}
-  .panel{border-radius:16px;}
-  .side,.right{padding:10px;}
-  .seg button{font-size:11.5px;line-height:1.2;}
-  .scene-list{grid-template-columns:repeat(2,minmax(0,1fr));}
-  .scene-btn{min-height:54px;padding:9px 8px;}
-  .scene-btn b{font-size:12.8px;}
-  .scene-btn span{font-size:10.8px;}
-  .kv{grid-template-columns:1fr 1fr;}
-  .kv .row{padding:7px 8px;}
-  .legend{flex-direction:column;align-items:stretch;}
-  .chip{width:100%;text-align:center;}
-  #roomSvg{min-height:240px;}
-  .devices{grid-template-columns:1fr;}
-  .device .left{font-size:13px;}
-}
-
-@media (max-width:380px){
-  .scene-list{grid-template-columns:1fr;}
-  .kv{grid-template-columns:1fr;}
-  #roomSvg{min-height:220px;}
-}
-
-@media (min-width:861px) and (max-width:1260px){
-  body{overflow:auto;align-items:flex-start;}
-  .wrap{height:auto;min-height:100vh;padding:12px 0;}
-  .layout{height:auto;grid-template-rows:auto auto;}
-  .center{min-height:620px;}
-  #roomSvg{max-height:600px;}
-  .right{overflow:visible;}
-  .devices{grid-template-columns:repeat(3,minmax(0,1fr));}
-}
-
-@media (pointer:coarse){
-  .side,.right{overflow:visible;}
-  .seg button,.scene-btn{touch-action:manipulation;}
-}
-</style>
-
 </head>
 <body>
 <div class="wrap"><div class="layout">
-  <aside class="panel side">
-    <h2>구성</h2>
-    <div class="seg">
-      <button class="pkg-btn active" data-package="basic">스탠다드 제어형</button>
-      <button class="pkg-btn" data-package="premium">프리미엄 공간제어형</button>
+
+<aside class="panel side">
+  <h2>구성</h2>
+  <div class="seg">
+    <button class="pkg-btn active" data-package="basic">스탠다드 제어형</button>
+    <button class="pkg-btn" data-package="premium">프리미엄 공간제어형</button>
+  </div>
+  <h2>모드</h2>
+  <div class="scene-list">
+    <button class="scene-btn active" data-scene="normal"><b>출근 모드</b><span>출근·업무 시작</span></button>
+    <button class="scene-btn" data-scene="welcome"><b>안내 모드</b><span>방문자 응대·공간 소개</span></button>
+    <button class="scene-btn" data-scene="meeting"><b>회의 모드</b><span>회의 진행</span></button>
+    <button class="scene-btn" data-scene="presentation"><b>발표 모드</b><span>발표·쇼룸 시연</span></button>
+    <button class="scene-btn" data-scene="powersave"><b>절전 모드</b><span>사용이 적은 시간대</span></button>
+    <button class="scene-btn" data-scene="off"><b>퇴근 모드</b><span>업무 종료·퇴근</span></button>
+    <button class="scene-btn premium-only" data-scene="focus"><b>집중 모드</b><span>고조도 업무 환경</span></button>
+    <button class="scene-btn premium-only" data-scene="rest"><b>휴식 모드</b><span>부드러운 조명</span></button>
+  </div>
+  <div class="kv">
+    <div class="row"><div class="k">구성</div><div class="v" id="kvPackage">스탠다드</div></div>
+    <div class="row"><div class="k">조명</div><div class="v" id="kvLight">ON/OFF</div></div>
+    <div class="row"><div class="k">색온도</div><div class="v" id="kvTemp">-</div></div>
+    <div class="row"><div class="k">비디오 월</div><div class="v" id="kvScreen">OFF</div></div>
+    <div class="row"><div class="k">블라인드</div><div class="v" id="kvBlind">올림</div></div>
+    <div class="row"><div class="k">에어컨</div><div class="v" id="kvAir">24°C / ON</div></div>
+    <div class="row"><div class="k">모니터 리프트</div><div class="v" id="kvLift">내림</div></div>
+  </div>
+</aside>
+
+<section class="panel center"><div class="viewer">
+  <div class="legend">
+    <div class="chip">모드 시연</div>
+    <div class="chip" id="sceneTitle">스탠다드 제어형 · 출근 모드</div>
+  </div>
+  <svg id="roomSvg" viewBox="90 145 820 505" aria-label="회의실">
+    <defs>
+      <linearGradient id="wallGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f405f"/><stop offset="100%" stop-color="#162338"/></linearGradient>
+      <linearGradient id="sideWallGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#394c70"/><stop offset="100%" stop-color="#17243b"/></linearGradient>
+      <linearGradient id="floorGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#21314b"/><stop offset="100%" stop-color="#0d1525"/></linearGradient>
+      <filter id="blur30" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="20"/></filter>
+      <filter id="blur14" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="10"/></filter>
+      <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="15" stdDeviation="18" flood-color="rgba(0,0,0,.42)"/></filter>
+    </defs>
+    <polygon points="180,170 820,170 940,290 60,290" fill="url(#wallGrad)" opacity=".96"/>
+    <polygon points="60,290 180,170 180,560 60,650" fill="url(#sideWallGrad)"/>
+    <polygon points="820,170 940,290 940,650 820,560" fill="#18253a"/>
+    <polygon points="180,560 820,560 940,650 60,650" fill="url(#floorGrad)"/>
+    <polygon points="60,290 940,290 820,560 180,560" fill="#111c2c" opacity=".28"/>
+    <ellipse id="ambientGlow" cx="500" cy="380" rx="340" ry="215" fill="var(--room-glow)" filter="url(#blur30)" opacity="var(--ambient)"/>
+    <polygon id="ambientCeiling" points="180,170 820,170 880,240 120,240" fill="var(--ceiling-light)" filter="url(#blur14)" opacity="var(--ambient)"/>
+    <polygon id="ambientWalls" points="86,312 915,312 825,518 176,518" fill="var(--wall-light)" filter="url(#blur14)" opacity="var(--ambient)"/>
+    <polygon id="ambientFloor" points="185,545 815,545 905,633 95,633" fill="var(--floor-light)" filter="url(#blur14)" opacity="var(--ambient)"/>
+    <rect x="300" y="195" width="140" height="22" rx="11" fill="#dfeeff" opacity=".72"/>
+    <rect x="560" y="195" width="140" height="22" rx="11" fill="#dfeeff" opacity=".72"/>
+    <rect x="220" y="205" width="560" height="230" rx="18" fill="#121c2e" opacity=".32"/>
+    <line x1="220" y1="440" x2="780" y2="440" stroke="rgba(255,255,255,.08)" stroke-width="4"/>
+    <!-- 에어컨 -->
+    <g class="svg-label"><rect x="206" y="170" width="78" height="26" rx="13"/><text x="245" y="188" text-anchor="middle">에어컨</text></g>
+    <g id="acUnitGroup" filter="url(#shadow)" opacity="var(--ac-unit-opacity)">
+      <rect x="210" y="238" width="125" height="52" rx="12" fill="#e5edf7"/>
+      <rect x="220" y="248" width="105" height="18" rx="8" fill="#cbd7e7"/>
+      <rect x="220" y="271" width="105" height="6" rx="3" fill="#9fb0c7"/>
+      <g class="svg-status on" id="acPowerBadge"><rect x="249" y="205" width="48" height="26" rx="13"/><text x="273" y="223" text-anchor="middle">ON</text></g>
+      <g id="acFlowGroup">
+        <path class="ac-flow-line" d="M245 292 C235 322,230 354,250 390" stroke="var(--ac-flow)" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <path class="ac-flow-line" d="M273 292 C268 324,270 358,285 392" stroke="var(--ac-flow)" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <path class="ac-flow-line" d="M302 292 C302 323,312 355,328 390" stroke="var(--ac-flow)" stroke-width="6" fill="none" stroke-linecap="round"/>
+      </g>
+    </g>
+    <!-- 비디오 월 -->
+    <g class="svg-label"><rect x="430" y="170" width="98" height="26" rx="13"/><text x="479" y="188" text-anchor="middle">비디오 월</text></g>
+    <g filter="url(#shadow)">
+      <rect x="345" y="222" width="310" height="175" rx="14" fill="#0b1321" stroke="rgba(255,255,255,.08)" stroke-width="4"/>
+      <rect id="videoScreen" x="360" y="237" width="280" height="145" rx="10" fill="#2c4b85" opacity=".96"/>
+      <rect id="screenCast" x="315" y="405" width="370" height="88" rx="26" fill="var(--screen-color)" filter="url(#blur30)" opacity=".34"/>
+      <g id="screenLogoShape"><circle cx="412" cy="310" r="22" fill="rgba(255,255,255,.9)"/><rect x="446" y="293" width="144" height="14" rx="7" fill="rgba(255,255,255,.92)"/><rect x="446" y="318" width="98" height="12" rx="6" fill="rgba(255,255,255,.7)"/></g>
+      <path id="screenWave" d="M382 322 C420 260,520 260,580 320 S640 360,618 348" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="10" stroke-linecap="round" opacity="0"/>
+      <g class="svg-status on" id="screenBadge"><rect x="575" y="248" width="52" height="28" rx="14"/><text x="601" y="267" text-anchor="middle">ON</text></g>
+    </g>
+    <!-- 블라인드 -->
+    <g class="svg-label"><rect x="778" y="170" width="78" height="26" rx="13"/><text x="817" y="188" text-anchor="middle">블라인드</text></g>
+    <g filter="url(#shadow)">
+      <rect x="770" y="240" width="95" height="190" rx="8" fill="#3a4a63" stroke="rgba(255,255,255,.1)"/>
+      <rect x="785" y="255" width="64" height="160" rx="4" fill="#a2c9df" opacity=".38"/>
+      <g id="blindLeft" transform-origin="785px 255px"><rect x="786" y="255" width="30" height="160" fill="#cbd5e1" opacity="var(--blind-opacity)"/><g fill="#b6c4d4" opacity=".9"><rect x="786" y="258" width="30" height="8"/><rect x="786" y="280" width="30" height="8"/><rect x="786" y="302" width="30" height="8"/><rect x="786" y="324" width="30" height="8"/><rect x="786" y="346" width="30" height="8"/><rect x="786" y="368" width="30" height="8"/><rect x="786" y="390" width="30" height="8"/></g></g>
+      <g id="blindRight" transform-origin="849px 255px"><rect x="819" y="255" width="30" height="160" fill="#cbd5e1" opacity="var(--blind-opacity)"/><g fill="#b6c4d4" opacity=".9"><rect x="819" y="258" width="30" height="8"/><rect x="819" y="280" width="30" height="8"/><rect x="819" y="302" width="30" height="8"/><rect x="819" y="324" width="30" height="8"/><rect x="819" y="346" width="30" height="8"/><rect x="819" y="368" width="30" height="8"/><rect x="819" y="390" width="30" height="8"/></g></g>
+      <g class="svg-status on" id="blindBadge"><rect x="796" y="209" width="57" height="28" rx="14"/><text x="824" y="228" text-anchor="middle">OPEN</text></g>
+    </g>
+    <!-- 가구 -->
+    <g filter="url(#shadow)">
+      <ellipse cx="497" cy="522" rx="258" ry="65" fill="var(--floor-light)" filter="url(#blur14)" opacity=".9"/>
+      <path d="M272 455 C375 410,625 410,728 455 L650 548 C582 566,418 566,350 548 Z" fill="#1b2a41"/>
+      <path d="M288 452 C386 418,614 418,712 452 L647 523 C585 539,415 539,353 523 Z" fill="#2b415d"/>
+      <ellipse cx="500" cy="485" rx="188" ry="40" fill="rgba(255,255,255,.07)"/>
+      <g fill="#1e2b40">
+        <path d="M242 475 C250 446,284 432,315 445 C330 452,337 465,336 484 L332 520 C330 536,320 546,304 549 L282 553 C261 557,245 545,242 523 Z"/>
+        <path d="M663 484 C662 464,670 450,685 443 C716 430,750 444,758 473 L755 521 C752 543,736 557,715 553 L693 549 C677 546,667 536,665 520 Z"/>
+        <path d="M357 555 C355 532,374 515,400 515 H430 C456 515,475 532,473 555 L470 590 C469 605,456 616,441 616 H389 C374 616,361 605,360 590 Z"/>
+        <path d="M527 555 C525 532,544 515,570 515 H600 C626 515,645 532,643 555 L640 590 C639 605,626 616,611 616 H559 C544 616,531 605,530 590 Z"/>
+        <path d="M178 535 C178 507,200 490,228 490 H255 C283 490,305 507,305 535 L303 570 C302 587,288 600,271 600 H212 C195 600,181 587,180 570 Z"/>
+        <path d="M695 535 C695 507,717 490,745 490 H772 C800 490,822 507,822 535 L820 570 C819 587,805 600,788 600 H729 C712 600,698 587,697 570 Z"/>
+      </g>
+    </g>
+    <!-- 모니터 리프트 -->
+    <g class="svg-label"><rect x="416" y="348" width="108" height="26" rx="13"/><text x="470" y="366" text-anchor="middle">모니터 리프트</text></g>
+    <g class="svg-status on" id="liftBadge"><rect x="532" y="348" width="64" height="26" rx="13"/><text x="564" y="366" text-anchor="middle">DOWN</text></g>
+    <g filter="url(#shadow)"><rect x="451" y="438" width="98" height="16" rx="8" fill="#111827"/><rect x="459" y="442" width="82" height="6" rx="3" fill="#2d3748"/></g>
+    <g id="liftGroup" filter="url(#shadow)">
+      <g id="liftMonitorGroup" transform="translate(0,58)">
+        <rect id="liftStem" x="494" y="395" width="12" height="52" rx="6" fill="#d4deed"/>
+        <rect x="456" y="344" width="88" height="54" rx="10" fill="#0b1321"/>
+        <rect id="liftMonitor" x="464" y="352" width="72" height="38" rx="6" fill="#3a4252"/>
+        <rect x="490" y="398" width="20" height="12" fill="#b8c4d7"/>
+        <rect x="473" y="410" width="54" height="7" rx="3.5" fill="#7b8ba3"/>
+      </g>
+    </g>
+    <!-- PC -->
+    <g id="pcGroup" filter="url(#shadow)">
+      <rect x="340" y="476" width="86" height="50" rx="8" fill="#0b1321"/>
+      <rect id="pcScreen" x="349" y="484" width="68" height="34" rx="5" fill="#5b8cff"/>
+      <rect x="373" y="526" width="20" height="10" fill="#aab6ca"/>
+      <rect x="356" y="536" width="54" height="8" rx="4" fill="#7b8ba3"/>
+    </g>
+    <g class="svg-label"><rect x="336" y="446" width="42" height="26" rx="13"/><text x="357" y="464" text-anchor="middle">PC</text></g>
+    <g class="svg-status on" id="pcBadge"><rect x="382" y="446" width="48" height="26" rx="13"/><text x="406" y="464" text-anchor="middle">ON</text></g>
+    <!-- 음향장비 -->
+    <g id="audioGroup" filter="url(#shadow)">
+      <rect x="620" y="472" width="58" height="56" rx="12" fill="#162337" stroke="rgba(255,255,255,.10)"/>
+      <circle cx="649" cy="491" r="12" fill="#536984"/>
+      <circle cx="649" cy="513" r="8" fill="#7b8fa8"/>
+      <path class="audio-wave" d="M682 487 C701 498,701 510,682 521" stroke="#6ee7b7" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path class="audio-wave" d="M692 478 C724 498,724 518,692 536" stroke="#6ee7b7" stroke-width="4" fill="none" stroke-linecap="round" opacity=".6"/>
+    </g>
+    <g class="svg-label"><rect x="597" y="446" width="78" height="26" rx="13"/><text x="636" y="464" text-anchor="middle">음향장비</text></g>
+    <g class="svg-status on" id="audioBadge"><rect x="680" y="446" width="48" height="26" rx="13"/><text x="704" y="464" text-anchor="middle">ON</text></g>
+    <!-- 환경 센서 — x=131 중앙 정렬 -->
+    <g filter="url(#shadow)">
+      <rect x="92" y="390" width="78" height="52" rx="10" fill="#0f1d30" stroke="rgba(110,231,183,.30)" stroke-width="2"/>
+      <rect x="97" y="396" width="67" height="14" rx="4" fill="rgba(110,231,183,.10)"/>
+      <text x="131" y="407" text-anchor="middle" fill="#6ee7b7" font-size="9" font-weight="900">ENV</text>
+      <text id="envTempSvg" x="131" y="424" text-anchor="middle" fill="#eef4ff" font-size="13" font-weight="900">24.0°C</text>
+      <text id="envHumSvg" x="131" y="438" text-anchor="middle" fill="#a7b6d6" font-size="9">56%</text>
+    </g>
+    <g class="svg-label"><rect x="92" y="370" width="78" height="20" rx="10"/><text x="131" y="384" text-anchor="middle" font-size="11">환경 센서</text></g>
+    <g id="envBadge" class="svg-status off"><rect x="92" y="444" width="78" height="22" rx="11"/><text x="131" y="459" text-anchor="middle" font-size="11">자동 대기</text></g>
+  </svg>
+</div></section>
+
+<aside class="panel right">
+  <h2>상태</h2>
+  <div class="summary">
+    <div class="status">
+      <div class="label">현재</div>
+      <div class="value" id="statusTitle">스탠다드 제어형 · 출근 모드</div>
+      <div class="sub" id="statusSub">조명·냉난방·필요 전원 자동 준비</div>
     </div>
-    <h2>모드</h2>
-    <div class="scene-list">
-      <button class="scene-btn active" data-scene="normal"><b>기본 모드</b><span>기본 운영</span></button>
-      <button class="scene-btn" data-scene="welcome"><b>안내 모드</b><span>공간 소개</span></button>
-      <button class="scene-btn" data-scene="meeting"><b>회의 모드</b><span>회의 진행</span></button>
-      <button class="scene-btn" data-scene="powersave"><b>절전 모드</b><span>전력 사용 최소화</span></button>
-      <button class="scene-btn premium-only" data-scene="presentation"><b>발표 모드</b><span>화면 집중</span></button>
-      <button class="scene-btn premium-only" data-scene="focus"><b>집중 모드</b><span>밝은 업무 환경</span></button>
-      <button class="scene-btn premium-only" data-scene="rest"><b>휴식 모드</b><span>부드러운 조명</span></button>
-      <button class="scene-btn" data-scene="off"><b>종료 모드</b><span>전원 정리</span></button>
+  </div>
+  <div class="devices">
+    <div class="device" id="devAc"><div class="left"><div class="ico">❄️</div><div>에어컨</div></div><div class="state" id="stateAc"><span class="dot" id="dotAc"></span><span id="txtAc">ON</span></div></div>
+    <div class="device" id="devBlind"><div class="left"><div class="ico">🪟</div><div>블라인드</div></div><div class="state" id="stateBlind"><span class="dot" id="dotBlind"></span><span id="txtBlind">올림</span></div></div>
+    <div class="device" id="devScreen"><div class="left"><div class="ico">🖥️</div><div>비디오 월</div></div><div class="state" id="stateScreen"><span class="dot" id="dotScreen"></span><span id="txtScreen">OFF</span></div></div>
+    <div class="device" id="devLift"><div class="left"><div class="ico">⬆️</div><div>모니터 리프트</div></div><div class="state" id="stateLift"><span class="dot" id="dotLift"></span><span id="txtLift">내림</span></div></div>
+    <div class="device" id="devPc"><div class="left"><div class="ico">💻</div><div>PC</div></div><div class="state" id="statePc"><span class="dot" id="dotPc"></span><span id="txtPc">OFF</span></div></div>
+    <div class="device" id="devAudio"><div class="left"><div class="ico">🔊</div><div>음향장비</div></div><div class="state" id="stateAudio"><span class="dot" id="dotAudio"></span><span id="txtAudio">OFF</span></div></div>
+  </div>
+
+  <!-- 환경 센서 패널 -->
+  <div class="env-sensor">
+    <div class="env-header">
+      <span class="env-title">🌡 환경 센서 · 자동 냉난방</span>
+      <label class="auto-toggle">자동
+        <div class="toggle-track on" id="autoToggle" onclick="toggleAuto()">
+          <div class="toggle-thumb"></div>
+        </div>
+      </label>
     </div>
-    <div class="kv">
-      <div class="row"><div class="k">구성</div><div class="v" id="kvPackage">스탠다드 제어형</div></div>
-      <div class="row"><div class="k">조명</div><div class="v" id="kvLight">ON/OFF</div></div>
-      <div class="row"><div class="k">색온도</div><div class="v" id="kvTemp">-</div></div>
-      <div class="row"><div class="k">비디오 월</div><div class="v" id="kvScreen">OFF</div></div>
-      <div class="row"><div class="k">블라인드</div><div class="v" id="kvBlind">올림</div></div>
-      <div class="row"><div class="k">에어컨</div><div class="v" id="kvAir">24°C / ON</div></div>
-      <div class="row"><div class="k">모니터 리프트</div><div class="v" id="kvLift">내림</div></div>
+    <!-- 온도 / 습도 / 조도 -->
+    <div class="env-grid">
+      <div class="env-cell"><div class="ec-label">온도</div><div class="ec-val" id="envTemp">24.0</div><div class="ec-unit">°C</div></div>
+      <div class="env-cell"><div class="ec-label">습도</div><div class="ec-val" id="envHum">56</div><div class="ec-unit">%</div></div>
+      <div class="env-cell"><div class="ec-label">조도</div><div class="ec-val" id="envLux">420</div><div class="ec-unit">lux</div></div>
     </div>
-  </aside>
-
-  <section class="panel center"><div class="viewer">
-    <div class="legend"><div class="chip">모드 시연</div><div class="chip" id="sceneTitle">스탠다드 제어형 · 기본 모드</div></div>
-    <svg id="roomSvg" viewBox="90 145 820 505" aria-label="회의실">
-      <defs>
-        <linearGradient id="wallGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2f405f"/><stop offset="100%" stop-color="#162338"/></linearGradient>
-        <linearGradient id="sideWallGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#394c70"/><stop offset="100%" stop-color="#17243b"/></linearGradient>
-        <linearGradient id="floorGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#21314b"/><stop offset="100%" stop-color="#0d1525"/></linearGradient>
-        <filter id="blur30" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="20"/></filter>
-        <filter id="blur14" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="10"/></filter>
-        <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="15" stdDeviation="18" flood-color="rgba(0,0,0,.42)"/></filter>
-      </defs>
-      <g id="roomBase">
-        <polygon points="180,170 820,170 940,290 60,290" fill="url(#wallGrad)" opacity=".96"/>
-        <polygon points="60,290 180,170 180,560 60,650" fill="url(#sideWallGrad)"/>
-        <polygon points="820,170 940,290 940,650 820,560" fill="#18253a"/>
-        <polygon points="180,560 820,560 940,650 60,650" fill="url(#floorGrad)"/>
-        <polygon points="60,290 940,290 820,560 180,560" fill="#111c2c" opacity=".28"/>
-      </g>
-      <ellipse id="ambientGlow" cx="500" cy="380" rx="340" ry="215" fill="var(--room-glow)" filter="url(#blur30)" opacity="var(--ambient)"/>
-      <polygon id="ambientCeiling" points="180,170 820,170 880,240 120,240" fill="var(--ceiling-light)" filter="url(#blur14)" opacity="var(--ambient)"/>
-      <polygon id="ambientWalls" points="86,312 915,312 825,518 176,518" fill="var(--wall-light)" filter="url(#blur14)" opacity="var(--ambient)"/>
-      <polygon id="ambientFloor" points="185,545 815,545 905,633 95,633" fill="var(--floor-light)" filter="url(#blur14)" opacity="var(--ambient)"/>
-      <g id="ceilingLights">
-        <rect x="300" y="195" width="140" height="22" rx="11" fill="#dfeeff" opacity=".72"/>
-        <rect x="560" y="195" width="140" height="22" rx="11" fill="#dfeeff" opacity=".72"/>
-      </g>
-      <g><rect x="220" y="205" width="560" height="230" rx="18" fill="#121c2e" opacity=".32"/><line x1="220" y1="440" x2="780" y2="440" stroke="rgba(255,255,255,.08)" stroke-width="4"/></g>
-
-      <!-- 에어컨 -->
-      <g class="svg-label" id="acLabel"><rect x="206" y="170" width="78" height="26" rx="13"/><text x="245" y="188" text-anchor="middle">에어컨</text></g>
-      <g id="acUnitGroup" filter="url(#shadow)" opacity="var(--ac-unit-opacity)">
-        <rect x="210" y="238" width="125" height="52" rx="12" fill="#e5edf7"/>
-        <rect x="220" y="248" width="105" height="18" rx="8" fill="#cbd7e7"/>
-        <rect x="220" y="271" width="105" height="6" rx="3" fill="#9fb0c7"/>
-        <g class="svg-status on" id="acPowerBadge"><rect x="249" y="205" width="48" height="26" rx="13"/><text x="273" y="223" text-anchor="middle">ON</text></g>
-        <g id="acFlowGroup">
-          <path class="ac-flow-line" d="M245 292 C235 322, 230 354, 250 390" stroke="var(--ac-flow)" stroke-width="6" fill="none" stroke-linecap="round"/>
-          <path class="ac-flow-line" d="M273 292 C268 324, 270 358, 285 392" stroke="var(--ac-flow)" stroke-width="6" fill="none" stroke-linecap="round"/>
-          <path class="ac-flow-line" d="M302 292 C302 323, 312 355, 328 390" stroke="var(--ac-flow)" stroke-width="6" fill="none" stroke-linecap="round"/>
-        </g>
-      </g>
-
-      <!-- 비디오 월 -->
-      <g class="svg-label" id="screenLabel"><rect x="430" y="170" width="98" height="26" rx="13"/><text x="479" y="188" text-anchor="middle">비디오 월</text></g>
-      <g id="screenGroup" filter="url(#shadow)">
-        <rect x="345" y="222" width="310" height="175" rx="14" fill="#0b1321" stroke="rgba(255,255,255,.08)" stroke-width="4"/>
-        <rect id="videoScreen" x="360" y="237" width="280" height="145" rx="10" fill="#2c4b85" opacity=".96"/>
-        <rect id="screenCast" x="315" y="405" width="370" height="88" rx="26" fill="var(--screen-color)" filter="url(#blur30)" opacity=".34"/>
-        <g id="screenLogoShape" opacity="1"><circle cx="412" cy="310" r="22" fill="rgba(255,255,255,.9)" /><rect x="446" y="293" width="144" height="14" rx="7" fill="rgba(255,255,255,.92)"/><rect x="446" y="318" width="98" height="12" rx="6" fill="rgba(255,255,255,.7)"/></g>
-        <path id="screenWave" d="M382 322 C420 260, 520 260, 580 320 S640 360, 618 348" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="10" stroke-linecap="round" opacity="0"/>
-        <g class="svg-status on" id="screenBadge"><rect x="575" y="248" width="52" height="28" rx="14"/><text x="601" y="267" text-anchor="middle">ON</text></g>
-      </g>
-
-      <!-- 블라인드 -->
-      <g class="svg-label" id="blindLabel"><rect x="778" y="170" width="78" height="26" rx="13"/><text x="817" y="188" text-anchor="middle">블라인드</text></g>
-      <g id="windowGroup" filter="url(#shadow)">
-        <rect x="770" y="240" width="95" height="190" rx="8" fill="#3a4a63" stroke="rgba(255,255,255,.1)"/>
-        <rect x="785" y="255" width="64" height="160" rx="4" fill="#a2c9df" opacity=".38"/>
-        <g id="blindLeft" transform-origin="785px 255px"><rect x="786" y="255" width="30" height="160" fill="#cbd5e1" opacity="var(--blind-opacity)"/><g fill="#b6c4d4" opacity=".9"><rect x="786" y="258" width="30" height="8"/><rect x="786" y="280" width="30" height="8"/><rect x="786" y="302" width="30" height="8"/><rect x="786" y="324" width="30" height="8"/><rect x="786" y="346" width="30" height="8"/><rect x="786" y="368" width="30" height="8"/><rect x="786" y="390" width="30" height="8"/></g></g>
-        <g id="blindRight" transform-origin="849px 255px"><rect x="819" y="255" width="30" height="160" fill="#cbd5e1" opacity="var(--blind-opacity)"/><g fill="#b6c4d4" opacity=".9"><rect x="819" y="258" width="30" height="8"/><rect x="819" y="280" width="30" height="8"/><rect x="819" y="302" width="30" height="8"/><rect x="819" y="324" width="30" height="8"/><rect x="819" y="346" width="30" height="8"/><rect x="819" y="368" width="30" height="8"/><rect x="819" y="390" width="30" height="8"/></g></g>
-        <g class="svg-status on" id="blindBadge"><rect x="796" y="209" width="57" height="28" rx="14"/><text x="824" y="228" text-anchor="middle">OPEN</text></g>
-      </g>
-
-      <!-- 테이블/의자 -->
-      <g id="furniture" filter="url(#shadow)">
-        <ellipse cx="497" cy="522" rx="258" ry="65" fill="var(--floor-light)" filter="url(#blur14)" opacity=".9"/>
-        <path d="M272 455 C375 410, 625 410, 728 455 L650 548 C582 566, 418 566, 350 548 Z" fill="#1b2a41"/>
-        <path d="M288 452 C386 418, 614 418, 712 452 L647 523 C585 539, 415 539, 353 523 Z" fill="#2b415d"/>
-        <ellipse cx="500" cy="485" rx="188" ry="40" fill="rgba(255,255,255,.07)"/>
-        <g id="chairs" fill="#1e2b40"><path d="M242 475 C250 446, 284 432, 315 445 C330 452, 337 465, 336 484 L332 520 C330 536, 320 546, 304 549 L282 553 C261 557, 245 545, 242 523 Z"/><path d="M663 484 C662 464, 670 450, 685 443 C716 430, 750 444, 758 473 L755 521 C752 543, 736 557, 715 553 L693 549 C677 546, 667 536, 665 520 Z"/><path d="M357 555 C355 532, 374 515, 400 515 H430 C456 515, 475 532, 473 555 L470 590 C469 605, 456 616, 441 616 H389 C374 616, 361 605, 360 590 Z"/><path d="M527 555 C525 532, 544 515, 570 515 H600 C626 515, 645 532, 643 555 L640 590 C639 605, 626 616, 611 616 H559 C544 616, 531 605, 530 590 Z"/><path d="M178 535 C178 507, 200 490, 228 490 H255 C283 490, 305 507, 305 535 L303 570 C302 587, 288 600, 271 600 H212 C195 600, 181 587, 180 570 Z"/><path d="M695 535 C695 507, 717 490, 745 490 H772 C800 490, 822 507, 822 535 L820 570 C819 587, 805 600, 788 600 H729 C712 600, 698 587, 697 570 Z"/></g>
-      </g>
-
-      <!-- 모니터 리프트 -->
-      <g class="svg-label" id="liftLabel"><rect x="416" y="348" width="108" height="26" rx="13"/><text x="470" y="366" text-anchor="middle">모니터 리프트</text></g>
-      <g class="svg-status on" id="liftBadge"><rect x="532" y="348" width="64" height="26" rx="13"/><text x="564" y="366" text-anchor="middle">DOWN</text></g>
-      <g id="liftBase" filter="url(#shadow)">
-        <rect x="451" y="438" width="98" height="16" rx="8" fill="#111827"/>
-        <rect x="459" y="442" width="82" height="6" rx="3" fill="#2d3748"/>
-      </g>
-      <g id="liftGroup" filter="url(#shadow)">
-        <g id="liftMonitorGroup" transform="translate(0,58)">
-          <rect id="liftStem" x="494" y="395" width="12" height="52" rx="6" fill="#d4deed"/>
-          <rect x="456" y="344" width="88" height="54" rx="10" fill="#0b1321"/>
-          <rect id="liftMonitor" x="464" y="352" width="72" height="38" rx="6" fill="#3a4252"/>
-          <rect x="490" y="398" width="20" height="12" fill="#b8c4d7"/>
-          <rect x="473" y="410" width="54" height="7" rx="3.5" fill="#7b8ba3"/>
-        </g>
-      </g>
-
-      <!-- PC -->
-      <g id="pcGroup" filter="url(#shadow)">
-        <rect x="340" y="476" width="86" height="50" rx="8" fill="#0b1321"/>
-        <rect id="pcScreen" x="349" y="484" width="68" height="34" rx="5" fill="#5b8cff"/>
-        <rect x="373" y="526" width="20" height="10" fill="#aab6ca"/><rect x="356" y="536" width="54" height="8" rx="4" fill="#7b8ba3"/>
-      </g>
-      <g class="svg-label"><rect x="336" y="446" width="42" height="26" rx="13"/><text x="357" y="464" text-anchor="middle">PC</text></g>
-      <g class="svg-status on" id="pcBadge"><rect x="382" y="446" width="48" height="26" rx="13"/><text x="406" y="464" text-anchor="middle">ON</text></g>
-
-      <!-- 음향장비 -->
-      <g id="audioGroup" filter="url(#shadow)">
-        <rect x="620" y="472" width="58" height="56" rx="12" fill="#162337" stroke="rgba(255,255,255,.10)"/>
-        <circle cx="649" cy="491" r="12" fill="#536984"/><circle cx="649" cy="513" r="8" fill="#7b8fa8"/>
-        <path class="audio-wave" d="M682 487 C701 498,701 510,682 521" stroke="#6ee7b7" stroke-width="5" fill="none" stroke-linecap="round"/>
-        <path class="audio-wave" d="M692 478 C724 498,724 518,692 536" stroke="#6ee7b7" stroke-width="4" fill="none" stroke-linecap="round" opacity=".6"/>
-      </g>
-      <g class="svg-label"><rect x="597" y="446" width="78" height="26" rx="13"/><text x="636" y="464" text-anchor="middle">음향장비</text></g>
-      <g class="svg-status on" id="audioBadge"><rect x="680" y="446" width="48" height="26" rx="13"/><text x="704" y="464" text-anchor="middle">ON</text></g>
-    </svg>
-  </div></section>
-
-  <aside class="panel right">
-    <h2>상태</h2>
-    <div class="summary">
-      <div class="status">
-        <div class="label">현재</div>
-        <div class="value" id="statusTitle">스탠다드 제어형 · 기본 모드</div>
-        <div class="sub" id="statusSub">비디오 월 OFF · 음향장비 OFF · 모니터 리프트 내림</div>
+    <!-- 온도 바 -->
+    <div class="temp-bar-wrap">
+      <div class="temp-bar-label">
+        <span>16°C</span><span id="tempBarLabel">목표 23.5°C</span><span>32°C</span>
+      </div>
+      <div class="temp-bar-bg"><div class="temp-bar-fill" id="tempBarFill" style="width:50%;background:#6ee7b7"></div></div>
+    </div>
+    <!-- 목표치 설정 -->
+    <div class="target-settings">
+      <div class="ts-header" onclick="toggleSettings()">
+        <span>⚙ 목표치 설정</span><span id="tsArrow">▾</span>
+      </div>
+      <div class="ts-body" id="tsBody">
+        <div class="ts-row">
+          <span class="ts-label">냉방 기준 온도</span>
+          <div class="ts-ctrl">
+            <button class="ts-btn" onclick="adj('high',-0.5)">−</button>
+            <span class="ts-val" id="valHigh">26.5°C</span>
+            <button class="ts-btn" onclick="adj('high',0.5)">+</button>
+          </div>
+        </div>
+        <div class="ts-row">
+          <span class="ts-label">목표 온도</span>
+          <div class="ts-ctrl">
+            <button class="ts-btn" onclick="adj('target',-0.5)">−</button>
+            <span class="ts-val" id="valTarget">23.5°C</span>
+            <button class="ts-btn" onclick="adj('target',0.5)">+</button>
+          </div>
+        </div>
+        <div class="ts-row">
+          <span class="ts-label">습도 상한</span>
+          <div class="ts-ctrl">
+            <button class="ts-btn" onclick="adj('hum',-5)">−</button>
+            <span class="ts-val" id="valHum">65%</span>
+            <button class="ts-btn" onclick="adj('hum',5)">+</button>
+          </div>
+        </div>
+        <div class="ts-row">
+          <span class="ts-label">조도 하한</span>
+          <div class="ts-ctrl">
+            <button class="ts-btn" onclick="adj('lux',-50)">−</button>
+            <span class="ts-val" id="valLux">300lx</span>
+            <button class="ts-btn" onclick="adj('lux',50)">+</button>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="devices">
-      <div class="device" id="devAc"><div class="left"><div class="ico">❄️</div><div>에어컨</div></div><div class="state" id="stateAc"><span class="dot" id="dotAc"></span><span id="txtAc">ON</span></div></div>
-      <div class="device" id="devBlind"><div class="left"><div class="ico">🪟</div><div>블라인드</div></div><div class="state" id="stateBlind"><span class="dot" id="dotBlind"></span><span id="txtBlind">올림</span></div></div>
-      <div class="device" id="devScreen"><div class="left"><div class="ico">🖥️</div><div>비디오 월</div></div><div class="state" id="stateScreen"><span class="dot" id="dotScreen"></span><span id="txtScreen">OFF</span></div></div>
-      <div class="device" id="devLift"><div class="left"><div class="ico">⬆️</div><div>모니터 리프트</div></div><div class="state" id="stateLift"><span class="dot" id="dotLift"></span><span id="txtLift">내림</span></div></div>
-      <div class="device" id="devPc"><div class="left"><div class="ico">💻</div><div>PC</div></div><div class="state" id="statePc"><span class="dot" id="dotPc"></span><span id="txtPc">OFF</span></div></div>
-      <div class="device" id="devAudio"><div class="left"><div class="ico">🔊</div><div>음향장비</div></div><div class="state" id="stateAudio"><span class="dot" id="dotAudio"></span><span id="txtAudio">OFF</span></div></div>
+    <div class="auto-status" id="autoStatus">
+      <div class="as-dot"></div><span id="autoStatusTxt">자동 제어 대기 중</span>
     </div>
-  </aside>
+  </div>
+</aside>
 </div></div>
+
 <script>
 const pkgInfo={basic:{label:'스탠다드 제어형'},premium:{label:'프리미엄 공간제어형'}};
-const off={
-  title:'종료 모드', temp:'-', screen:'OFF', blind:'내림', air:'OFF', light:'OFF', lift:'내림',
-  sub:'조명·화면·설비 전원 정리',
-  css:{roomGlow:'rgba(80,90,110,.06)',ceiling:'rgba(80,90,110,.04)',walls:'rgba(80,90,110,.04)',floor:'rgba(80,90,110,.04)',screenColor:'rgba(40,46,58,.12)',ambient:'.15',acUnitOpacity:'.35',acFlow:'#7f8ba3',blindOpacity:'.92',filter:'saturate(0) brightness(.55)'},
-  device:{screen:false,blind:'내림',ac:false,lift:false,pc:false,audio:false}, screenMode:'off', blindLeft:'rotate(0)', blindRight:'rotate(0)', liftY:58
-};
-const scenes={
+const off={title:'퇴근 모드',temp:'-',screen:'OFF',blind:'내림',air:'OFF',light:'OFF',lift:'내림',sub:'조명·화면·냉난방·대기전력 일괄 정리',css:{roomGlow:'rgba(80,90,110,.06)',ceiling:'rgba(80,90,110,.04)',walls:'rgba(80,90,110,.04)',floor:'rgba(80,90,110,.04)',screenColor:'rgba(40,46,58,.12)',ambient:'.15',acUnitOpacity:'.35',acFlow:'#7f8ba3',blindOpacity:'.92',filter:'saturate(0) brightness(.55)'},device:{screen:false,blind:'내림',ac:false,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(0)',blindRight:'rotate(0)',liftY:58};
+const S={
   basic:{
-    normal:{title:'기본 모드',temp:'-',screen:'OFF',blind:'올림',air:'24°C / ON',light:'ON/OFF',lift:'내림',sub:'비디오 월 OFF · 음향장비 OFF · 모니터 리프트 내림',css:{roomGlow:'rgba(205,220,244,.16)',ceiling:'rgba(205,220,244,.12)',walls:'rgba(205,220,244,.09)',floor:'rgba(205,220,244,.07)',screenColor:'rgba(40,46,58,.18)',ambient:'.75',acUnitOpacity:'1',acFlow:'#8ee8ff',blindOpacity:'.80',filter:'saturate(.96) brightness(.9)'},device:{screen:false,blind:'올림',ac:true,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:58},
-    welcome:{title:'안내 모드',temp:'-',screen:'소개',blind:'올림',air:'23°C / ON',light:'ON/OFF',lift:'올림',sub:'공간 소개 · 비디오 월 ON · 모니터 리프트 올림',css:{roomGlow:'rgba(230,238,255,.18)',ceiling:'rgba(230,238,255,.14)',walls:'rgba(230,238,255,.10)',floor:'rgba(230,238,255,.08)',screenColor:'rgba(99,154,255,.48)',ambient:'1',acUnitOpacity:'1',acFlow:'#8ee8ff',blindOpacity:'.72',filter:'saturate(1) brightness(1)'},device:{screen:true,blind:'올림',ac:true,lift:true,pc:true,audio:true},screenMode:'welcome',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:0},
-    meeting:{title:'회의 모드',temp:'-',screen:'회의',blind:'올림',air:'24°C / ON',light:'ON/OFF',lift:'올림',sub:'회의 화면 · PC ON · 모니터 리프트 올림',css:{roomGlow:'rgba(230,238,255,.20)',ceiling:'rgba(230,238,255,.15)',walls:'rgba(230,238,255,.11)',floor:'rgba(230,238,255,.08)',screenColor:'rgba(88,220,255,.34)',ambient:'1',acUnitOpacity:'1',acFlow:'#a9eeff',blindOpacity:'.82',filter:'saturate(1.02) brightness(1)'},device:{screen:true,blind:'올림',ac:true,lift:true,pc:true,audio:true},screenMode:'meeting',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:0},
-    powersave:{title:'절전 모드',temp:'-',screen:'OFF',blind:'내림',air:'OFF',light:'최소',lift:'내림',sub:'필요 전기만 유지 · 비필수 장비 OFF',css:{roomGlow:'rgba(120,132,160,.09)',ceiling:'rgba(120,132,160,.07)',walls:'rgba(120,132,160,.05)',floor:'rgba(120,132,160,.04)',screenColor:'rgba(40,46,58,.12)',ambient:'.28',acUnitOpacity:'.45',acFlow:'#7f8ba3',blindOpacity:'.92',filter:'saturate(.45) brightness(.65)'},device:{screen:false,blind:'내림',ac:false,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(0)',blindRight:'rotate(0)',liftY:58},
+    normal:{title:'출근 모드',temp:'-',screen:'OFF',blind:'올림',air:'24°C / ON',light:'ON/OFF',lift:'내림',sub:'조명·냉난방·필요 전원을 켜고 업무 바로 시작 가능한 상태로 준비',css:{roomGlow:'rgba(205,220,244,.16)',ceiling:'rgba(205,220,244,.12)',walls:'rgba(205,220,244,.09)',floor:'rgba(205,220,244,.07)',screenColor:'rgba(40,46,58,.18)',ambient:'.75',acUnitOpacity:'1',acFlow:'#8ee8ff',blindOpacity:'.80',filter:'saturate(.96) brightness(.9)'},device:{screen:false,blind:'올림',ac:true,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:58},
+    welcome:{title:'안내 모드',temp:'-',screen:'소개',blind:'올림',air:'23°C / ON',light:'ON/OFF',lift:'올림',sub:'안내 화면 켜고, 조명·블라인드를 방문자 응대에 맞게 전환',css:{roomGlow:'rgba(230,238,255,.18)',ceiling:'rgba(230,238,255,.14)',walls:'rgba(230,238,255,.10)',floor:'rgba(230,238,255,.08)',screenColor:'rgba(99,154,255,.48)',ambient:'1',acUnitOpacity:'1',acFlow:'#8ee8ff',blindOpacity:'.72',filter:'saturate(1) brightness(1)'},device:{screen:true,blind:'올림',ac:true,lift:true,pc:true,audio:true},screenMode:'welcome',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:0},
+    meeting:{title:'회의 모드',temp:'-',screen:'회의',blind:'올림',air:'24°C / ON',light:'ON/OFF',lift:'올림',sub:'화면·조명·냉난방을 회의 환경에 맞게 준비',css:{roomGlow:'rgba(230,238,255,.20)',ceiling:'rgba(230,238,255,.15)',walls:'rgba(230,238,255,.11)',floor:'rgba(230,238,255,.08)',screenColor:'rgba(88,220,255,.34)',ambient:'1',acUnitOpacity:'1',acFlow:'#a9eeff',blindOpacity:'.82',filter:'saturate(1.02) brightness(1)'},device:{screen:true,blind:'올림',ac:true,lift:true,pc:true,audio:true},screenMode:'meeting',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:0},
+    presentation:{title:'발표 모드',temp:'-',screen:'발표',blind:'내림',air:'24°C / ON',light:'ON/OFF',lift:'올림',sub:'화면이 잘 보이도록 조명 밝기와 블라인드 위치 조정',css:{roomGlow:'rgba(205,220,244,.14)',ceiling:'rgba(205,220,244,.10)',walls:'rgba(205,220,244,.08)',floor:'rgba(205,220,244,.06)',screenColor:'rgba(90,150,255,.55)',ambient:'.72',acUnitOpacity:'1',acFlow:'#a9eeff',blindOpacity:'.92',filter:'saturate(.96) brightness(.88)'},device:{screen:true,blind:'내림',ac:true,lift:true,pc:true,audio:true},screenMode:'presentation',blindLeft:'rotate(0)',blindRight:'rotate(0)',liftY:0},
+    powersave:{title:'절전 모드',temp:'-',screen:'OFF',blind:'내림',air:'OFF',light:'최소',lift:'내림',sub:'불필요한 조명·냉난방·전원 사용을 줄임',css:{roomGlow:'rgba(120,132,160,.09)',ceiling:'rgba(120,132,160,.07)',walls:'rgba(120,132,160,.05)',floor:'rgba(120,132,160,.04)',screenColor:'rgba(40,46,58,.12)',ambient:'.28',acUnitOpacity:'.45',acFlow:'#7f8ba3',blindOpacity:'.92',filter:'saturate(.45) brightness(.65)'},device:{screen:false,blind:'내림',ac:false,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(0)',blindRight:'rotate(0)',liftY:58},
     off
   },
   premium:{
-    normal:{title:'기본 모드',temp:'3500K',screen:'OFF',blind:'올림',air:'24°C / ON',light:'색온도',lift:'내림',sub:'비디오 월 OFF · 음향장비 OFF · 모니터 리프트 내림',css:{roomGlow:'rgba(232,226,208,.18)',ceiling:'rgba(232,226,208,.13)',walls:'rgba(232,226,208,.10)',floor:'rgba(232,226,208,.08)',screenColor:'rgba(40,46,58,.18)',ambient:'.78',acUnitOpacity:'1',acFlow:'#8ee8ff',blindOpacity:'.80',filter:'saturate(1) brightness(.92)'},device:{screen:false,blind:'올림',ac:true,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:58},
+    normal:{title:'출근 모드',temp:'3500K',screen:'OFF',blind:'올림',air:'24°C / ON',light:'색온도',lift:'내림',sub:'조명 색온도 설정 · 냉난방 자동 준비',css:{roomGlow:'rgba(232,226,208,.18)',ceiling:'rgba(232,226,208,.13)',walls:'rgba(232,226,208,.10)',floor:'rgba(232,226,208,.08)',screenColor:'rgba(40,46,58,.18)',ambient:'.78',acUnitOpacity:'1',acFlow:'#8ee8ff',blindOpacity:'.80',filter:'saturate(1) brightness(.92)'},device:{screen:false,blind:'올림',ac:true,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:58},
     welcome:{title:'안내 모드',temp:'2700K',screen:'소개',blind:'올림',air:'23°C / ON',light:'색온도',lift:'올림',sub:'공간 소개 · 색온도 시연 · 모니터 리프트 올림',css:{roomGlow:'rgba(255,211,122,.36)',ceiling:'rgba(255,211,122,.26)',walls:'rgba(255,211,122,.18)',floor:'rgba(255,211,122,.14)',screenColor:'rgba(99,154,255,.60)',ambient:'1',acUnitOpacity:'1',acFlow:'#8ee8ff',blindOpacity:'.72',filter:'saturate(1.04) brightness(1)'},device:{screen:true,blind:'올림',ac:true,lift:true,pc:true,audio:true},screenMode:'welcome',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:0},
-    meeting:{title:'회의 모드',temp:'6500K',screen:'회의',blind:'올림',air:'24°C / ON',light:'색온도',lift:'올림',sub:'6500K · 회의 화면 · 모니터 리프트 올림',css:{roomGlow:'rgba(217,246,255,.38)',ceiling:'rgba(217,246,255,.30)',walls:'rgba(217,246,255,.18)',floor:'rgba(217,246,255,.12)',screenColor:'rgba(88,220,255,.44)',ambient:'1',acUnitOpacity:'1',acFlow:'#a9eeff',blindOpacity:'.82',filter:'saturate(1.08) brightness(1)'},device:{screen:true,blind:'올림',ac:true,lift:true,pc:true,audio:true},screenMode:'meeting',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:0},
-    powersave:{title:'절전 모드',temp:'-',screen:'OFF',blind:'내림',air:'OFF',light:'최소',lift:'내림',sub:'필요 전기만 유지 · 비필수 장비 OFF',css:{roomGlow:'rgba(120,132,160,.09)',ceiling:'rgba(120,132,160,.07)',walls:'rgba(120,132,160,.05)',floor:'rgba(120,132,160,.04)',screenColor:'rgba(40,46,58,.12)',ambient:'.28',acUnitOpacity:'.45',acFlow:'#7f8ba3',blindOpacity:'.92',filter:'saturate(.45) brightness(.65)'},device:{screen:false,blind:'내림',ac:false,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(0)',blindRight:'rotate(0)',liftY:58},
-    presentation:{title:'발표 모드',temp:'3000K',screen:'발표',blind:'내림',air:'24°C / ON',light:'색온도',lift:'올림',sub:'3000K · 화면 집중 · 발표용',css:{roomGlow:'rgba(255,220,150,.20)',ceiling:'rgba(255,220,150,.14)',walls:'rgba(255,220,150,.09)',floor:'rgba(255,220,150,.06)',screenColor:'rgba(90,150,255,.55)',ambient:'.78',acUnitOpacity:'1',acFlow:'#a9eeff',blindOpacity:'.92',filter:'saturate(1.02) brightness(.92)'},device:{screen:true,blind:'내림',ac:true,lift:true,pc:true,audio:true},screenMode:'presentation',blindLeft:'rotate(0)',blindRight:'rotate(0)',liftY:0},
-    focus:{title:'집중 모드',temp:'6500K',screen:'업무',blind:'올림',air:'23°C / ON',light:'색온도',lift:'올림',sub:'6500K · 고조도 · 음향 OFF',css:{roomGlow:'rgba(217,246,255,.44)',ceiling:'rgba(217,246,255,.36)',walls:'rgba(217,246,255,.22)',floor:'rgba(217,246,255,.14)',screenColor:'rgba(88,220,255,.34)',ambient:'1',acUnitOpacity:'1',acFlow:'#a9eeff',blindOpacity:'.82',filter:'saturate(1.12) brightness(1.04)'},device:{screen:true,blind:'올림',ac:true,lift:true,pc:true,audio:false},screenMode:'meeting',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:0},
-    rest:{title:'휴식 모드',temp:'2700K',screen:'OFF',blind:'내림',air:'25°C / ON',light:'색온도',lift:'내림',sub:'2700K · 낮은 밝기 · 휴식',css:{roomGlow:'rgba(255,211,122,.18)',ceiling:'rgba(255,211,122,.10)',walls:'rgba(255,211,122,.08)',floor:'rgba(255,211,122,.06)',screenColor:'rgba(32,40,58,.18)',ambient:'.55',acUnitOpacity:'1',acFlow:'#8ee8ff',blindOpacity:'.90',filter:'saturate(.92) brightness(.86)'},device:{screen:false,blind:'내림',ac:true,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(0)',blindRight:'rotate(0)',liftY:58},
+    meeting:{title:'회의 모드',temp:'6500K',screen:'회의',blind:'올림',air:'24°C / ON',light:'색온도',lift:'올림',sub:'6500K · 화면·조명·냉난방을 회의 환경에 맞게 준비',css:{roomGlow:'rgba(217,246,255,.38)',ceiling:'rgba(217,246,255,.30)',walls:'rgba(217,246,255,.18)',floor:'rgba(217,246,255,.12)',screenColor:'rgba(88,220,255,.44)',ambient:'1',acUnitOpacity:'1',acFlow:'#a9eeff',blindOpacity:'.82',filter:'saturate(1.08) brightness(1)'},device:{screen:true,blind:'올림',ac:true,lift:true,pc:true,audio:true},screenMode:'meeting',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:0},
+    presentation:{title:'발표 모드',temp:'3000K',screen:'발표',blind:'내림',air:'24°C / ON',light:'색온도',lift:'올림',sub:'3000K · 화면이 잘 보이도록 조명·블라인드 조정',css:{roomGlow:'rgba(255,220,150,.20)',ceiling:'rgba(255,220,150,.14)',walls:'rgba(255,220,150,.09)',floor:'rgba(255,220,150,.06)',screenColor:'rgba(90,150,255,.55)',ambient:'.78',acUnitOpacity:'1',acFlow:'#a9eeff',blindOpacity:'.92',filter:'saturate(1.02) brightness(.92)'},device:{screen:true,blind:'내림',ac:true,lift:true,pc:true,audio:true},screenMode:'presentation',blindLeft:'rotate(0)',blindRight:'rotate(0)',liftY:0},
+    powersave:{title:'절전 모드',temp:'-',screen:'OFF',blind:'내림',air:'OFF',light:'최소',lift:'내림',sub:'불필요한 조명·냉난방·전원 사용을 줄임',css:{roomGlow:'rgba(120,132,160,.09)',ceiling:'rgba(120,132,160,.07)',walls:'rgba(120,132,160,.05)',floor:'rgba(120,132,160,.04)',screenColor:'rgba(40,46,58,.12)',ambient:'.28',acUnitOpacity:'.45',acFlow:'#7f8ba3',blindOpacity:'.92',filter:'saturate(.45) brightness(.65)'},device:{screen:false,blind:'내림',ac:false,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(0)',blindRight:'rotate(0)',liftY:58},
+    focus:{title:'집중 모드',temp:'6500K',screen:'업무',blind:'올림',air:'23°C / ON',light:'색온도',lift:'올림',sub:'6500K · 고조도 업무 환경 · 음향 OFF',css:{roomGlow:'rgba(217,246,255,.44)',ceiling:'rgba(217,246,255,.36)',walls:'rgba(217,246,255,.22)',floor:'rgba(217,246,255,.14)',screenColor:'rgba(88,220,255,.34)',ambient:'1',acUnitOpacity:'1',acFlow:'#a9eeff',blindOpacity:'.82',filter:'saturate(1.12) brightness(1.04)'},device:{screen:true,blind:'올림',ac:true,lift:true,pc:true,audio:false},screenMode:'meeting',blindLeft:'rotate(12)',blindRight:'rotate(-12)',liftY:0},
+    rest:{title:'휴식 모드',temp:'2700K',screen:'OFF',blind:'내림',air:'25°C / ON',light:'색온도',lift:'내림',sub:'2700K · 낮은 밝기 · 부드러운 조명',css:{roomGlow:'rgba(255,211,122,.18)',ceiling:'rgba(255,211,122,.10)',walls:'rgba(255,211,122,.08)',floor:'rgba(255,211,122,.06)',screenColor:'rgba(32,40,58,.18)',ambient:'.55',acUnitOpacity:'1',acFlow:'#8ee8ff',blindOpacity:'.90',filter:'saturate(.92) brightness(.86)'},device:{screen:false,blind:'내림',ac:true,lift:false,pc:false,audio:false},screenMode:'off',blindLeft:'rotate(0)',blindRight:'rotate(0)',liftY:58},
     off
   }
 };
 
 let pkg='basic',scene='normal';
-const $=s=>document.querySelector(s); const $$=s=>[...document.querySelectorAll(s)];
-const el={
-  title:$('#sceneTitle'),status:$('#statusTitle'),sub:$('#statusSub'),
-  kvPackage:$('#kvPackage'),kvLight:$('#kvLight'),kvTemp:$('#kvTemp'),kvScreen:$('#kvScreen'),kvBlind:$('#kvBlind'),kvAir:$('#kvAir'),kvLift:$('#kvLift'),
-  blindLeft:$('#blindLeft'),blindRight:$('#blindRight'),video:$('#videoScreen'),logo:$('#screenLogoShape'),wave:$('#screenWave'),
-  pcScreen:$('#pcScreen'),pcGroup:$('#pcGroup'),audioGroup:$('#audioGroup'),acFlowGroup:$('#acFlowGroup'),
-  liftMonitorGroup:$('#liftMonitorGroup'),liftMonitor:$('#liftMonitor'),
-  acBadge:$('#acPowerBadge'),screenBadge:$('#screenBadge'),blindBadge:$('#blindBadge'),liftBadge:$('#liftBadge'),pcBadge:$('#pcBadge'),audioBadge:$('#audioBadge')
-};
-function setRoot(s){
-  const pairs={'--room-glow':s.css.roomGlow,'--ceiling-light':s.css.ceiling,'--wall-light':s.css.walls,'--floor-light':s.css.floor,'--screen-color':s.css.screenColor,'--ambient':s.css.ambient,'--ac-unit-opacity':s.css.acUnitOpacity,'--ac-flow':s.css.acFlow,'--blind-opacity':s.css.blindOpacity,'--room-filter':s.css.filter};
-  Object.entries(pairs).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
-}
-function statusGroup(g,on,text){g.classList.toggle('on',!!on);g.classList.toggle('off',!on);g.querySelector('text').textContent=text;}
-function sideDevice(key,on,text){
-  $('#dev'+key).classList.toggle('off',!on);
-  $('#dot'+key).classList.toggle('on',!!on);
-  $('#state'+key).classList.toggle('on',!!on);
-  $('#state'+key).classList.toggle('off',!on);
-  $('#txt'+key).textContent=text;
-}
-function setKvState(node, active){node.className='v '+(active?'on':'off');}
+const q=s=>document.querySelector(s), qa=s=>[...document.querySelectorAll(s)];
+function setRoot(s){const m={'--room-glow':s.css.roomGlow,'--ceiling-light':s.css.ceiling,'--wall-light':s.css.walls,'--floor-light':s.css.floor,'--screen-color':s.css.screenColor,'--ambient':s.css.ambient,'--ac-unit-opacity':s.css.acUnitOpacity,'--ac-flow':s.css.acFlow,'--blind-opacity':s.css.blindOpacity,'--room-filter':s.css.filter};Object.entries(m).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));}
+function sg(g,on,t){g.classList.toggle('on',!!on);g.classList.toggle('off',!on);g.querySelector('text').textContent=t;}
+function sd(k,on,t){q('#dev'+k).classList.toggle('off',!on);q('#dot'+k).classList.toggle('on',!!on);q('#state'+k).classList.toggle('on',!!on);q('#state'+k).classList.toggle('off',!on);q('#txt'+k).textContent=t;}
+function kv(n,a){n.className='v '+(a?'on':'off');}
 function apply(){
-  if(!scenes[pkg][scene]) scene='normal';
-  const s=scenes[pkg][scene], p=pkgInfo[pkg], d=s.device;
-  $$('.pkg-btn').forEach(b=>b.classList.toggle('active',b.dataset.package===pkg));
-  $$('.scene-btn').forEach(b=>{b.classList.toggle('hidden',pkg==='basic'&&b.classList.contains('premium-only'));b.classList.toggle('active',b.dataset.scene===scene)});
+  if(!S[pkg][scene])scene='normal';
+  const s=S[pkg][scene],p=pkgInfo[pkg],d=s.device;
+  qa('.pkg-btn').forEach(b=>b.classList.toggle('active',b.dataset.package===pkg));
+  qa('.scene-btn').forEach(b=>{b.classList.toggle('hidden',pkg==='basic'&&b.classList.contains('premium-only'));b.classList.toggle('active',b.dataset.scene===scene);});
   setRoot(s);
-
-  el.title.textContent=`${p.label} · ${s.title}`;
-  el.status.textContent=`${p.label} · ${s.title}`;
-  el.sub.textContent=s.sub;
-  el.kvPackage.textContent=p.label; el.kvLight.textContent=s.light; el.kvTemp.textContent=s.temp; el.kvScreen.textContent=s.screen; el.kvBlind.textContent=s.blind; el.kvAir.textContent=s.air; el.kvLift.textContent=s.lift;
-  setKvState(el.kvScreen,d.screen); setKvState(el.kvBlind,d.blind==='올림'); setKvState(el.kvAir,d.ac); setKvState(el.kvLift,d.lift);
-
-  sideDevice('Ac',d.ac,d.ac?'ON':'OFF');
-  sideDevice('Blind',d.blind==='올림',d.blind);
-  sideDevice('Screen',d.screen,d.screen?'ON':'OFF');
-  sideDevice('Lift',d.lift,d.lift?'올림':'내림');
-  sideDevice('Pc',d.pc,d.pc?'ON':'OFF');
-  sideDevice('Audio',d.audio,d.audio?'ON':'OFF');
-
-  el.blindLeft.style.transform=s.blindLeft;
-  el.blindRight.style.transform=s.blindRight;
-  statusGroup(el.acBadge,d.ac,d.ac?'ON':'OFF');
-  statusGroup(el.screenBadge,d.screen,d.screen?'ON':'OFF');
-  statusGroup(el.blindBadge,d.blind==='올림',d.blind);
-  statusGroup(el.liftBadge,d.lift,d.lift?'올림':'내림');
-  statusGroup(el.pcBadge,d.pc,d.pc?'ON':'OFF');
-  statusGroup(el.audioBadge,d.audio,d.audio?'ON':'OFF');
-
-  el.acFlowGroup.style.display=d.ac?'block':'none';
-  el.pcGroup.style.opacity=d.pc?1:.38;
-  el.pcScreen.setAttribute('fill',d.pc?'#5b8cff':'#2a2e38');
-  el.audioGroup.style.opacity=d.audio?1:.38;
-  $$('.audio-wave').forEach(w=>w.classList.toggle('off',!d.audio));
-
-  el.liftMonitorGroup.setAttribute('transform', `translate(0,${s.liftY})`);
-  el.liftMonitor.setAttribute('fill', d.lift ? '#5b8cff' : '#3a4252');
-
-  if(s.screenMode==='welcome'){
-    el.video.setAttribute('fill', pkg==='premium' ? '#476da8' : '#38577f');
-    el.video.setAttribute('opacity','.98'); el.logo.setAttribute('opacity','1'); el.wave.setAttribute('opacity','0');
-  }else if(s.screenMode==='off'){
-    el.video.setAttribute('fill','#2a2e38');
-    el.video.setAttribute('opacity','.6'); el.logo.setAttribute('opacity','0'); el.wave.setAttribute('opacity','0');
-  }else{
-    el.video.setAttribute('fill', pkg==='premium' ? '#284b67' : '#344a60');
-    el.video.setAttribute('opacity','.98'); el.logo.setAttribute('opacity','0.35'); el.wave.setAttribute('opacity','1');
-  }
+  q('#sceneTitle').textContent=q('#statusTitle').textContent=`${p.label} · ${s.title}`;
+  q('#statusSub').textContent=s.sub;
+  q('#kvPackage').textContent=p.label;q('#kvLight').textContent=s.light;q('#kvTemp').textContent=s.temp;
+  q('#kvScreen').textContent=s.screen;q('#kvBlind').textContent=s.blind;q('#kvAir').textContent=s.air;q('#kvLift').textContent=s.lift;
+  kv(q('#kvScreen'),d.screen);kv(q('#kvBlind'),d.blind==='올림');kv(q('#kvAir'),d.ac);kv(q('#kvLift'),d.lift);
+  sd('Ac',d.ac,d.ac?'ON':'OFF');sd('Blind',d.blind==='올림',d.blind);sd('Screen',d.screen,d.screen?'ON':'OFF');
+  sd('Lift',d.lift,d.lift?'올림':'내림');sd('Pc',d.pc,d.pc?'ON':'OFF');sd('Audio',d.audio,d.audio?'ON':'OFF');
+  q('#blindLeft').style.transform=s.blindLeft;q('#blindRight').style.transform=s.blindRight;
+  sg(q('#acPowerBadge'),d.ac,autoAcOn?'AUTO':d.ac?'ON':'OFF');
+  sg(q('#screenBadge'),d.screen,d.screen?'ON':'OFF');sg(q('#blindBadge'),d.blind==='올림',d.blind);
+  sg(q('#liftBadge'),d.lift,d.lift?'올림':'내림');sg(q('#pcBadge'),d.pc,d.pc?'ON':'OFF');sg(q('#audioBadge'),d.audio,d.audio?'ON':'OFF');
+  q('#acFlowGroup').style.display=(d.ac||autoAcOn)?'block':'none';
+  q('#pcGroup').style.opacity=d.pc?1:.38;q('#pcScreen').setAttribute('fill',d.pc?'#5b8cff':'#2a2e38');
+  q('#audioGroup').style.opacity=d.audio?1:.38;qa('.audio-wave').forEach(w=>w.classList.toggle('off',!d.audio));
+  q('#liftMonitorGroup').setAttribute('transform',`translate(0,${s.liftY})`);
+  q('#liftMonitor').setAttribute('fill',d.lift?'#5b8cff':'#3a4252');
+  const vm=s.screenMode;const vd=q('#videoScreen'),vl=q('#screenLogoShape'),vw=q('#screenWave');
+  if(vm==='welcome'){vd.setAttribute('fill',pkg==='premium'?'#476da8':'#38577f');vd.setAttribute('opacity','.98');vl.setAttribute('opacity','1');vw.setAttribute('opacity','0');}
+  else if(vm==='off'){vd.setAttribute('fill','#2a2e38');vd.setAttribute('opacity','.6');vl.setAttribute('opacity','0');vw.setAttribute('opacity','0');}
+  else{vd.setAttribute('fill',pkg==='premium'?'#284b67':'#344a60');vd.setAttribute('opacity','.98');vl.setAttribute('opacity','0.35');vw.setAttribute('opacity','1');}
 }
-$$('.pkg-btn').forEach(b=>b.onclick=()=>{pkg=b.dataset.package; if(!scenes[pkg][scene]) scene='normal'; apply();});
-$$('.scene-btn').forEach(b=>b.onclick=()=>{scene=b.dataset.scene; apply();});
+qa('.pkg-btn').forEach(b=>b.onclick=()=>{pkg=b.dataset.package;if(!S[pkg][scene])scene='normal';apply();});
+qa('.scene-btn').forEach(b=>b.onclick=()=>{scene=b.dataset.scene;apply();});
 apply();
+
+/* ── 환경 센서 ── */
+let autoMode=true,autoAcOn=false,settingsOpen=false;
+let envTemp=24.0,envHum=56,envLux=420;
+let TEMP_HIGH=26.5,TEMP_TARGET=23.5,HUM_HIGH=65,LUX_LOW=300;
+
+function toggleAuto(){autoMode=!autoMode;q('#autoToggle').classList.toggle('on',autoMode);if(!autoMode&&autoAcOn){autoAcOn=false;restoreAc();}updateStatus();}
+function toggleSettings(){settingsOpen=!settingsOpen;q('#tsBody').classList.toggle('open',settingsOpen);q('#tsArrow').textContent=settingsOpen?'▴':'▾';}
+function adj(type,delta){
+  if(type==='high'){TEMP_HIGH=Math.round(Math.max(24,Math.min(30,TEMP_HIGH+delta))*10)/10;q('#valHigh').textContent=TEMP_HIGH.toFixed(1)+'°C';}
+  else if(type==='target'){TEMP_TARGET=Math.round(Math.max(18,Math.min(TEMP_HIGH-1,TEMP_TARGET+delta))*10)/10;q('#valTarget').textContent=TEMP_TARGET.toFixed(1)+'°C';}
+  else if(type==='hum'){HUM_HIGH=Math.max(50,Math.min(85,HUM_HIGH+delta));q('#valHum').textContent=HUM_HIGH+'%';}
+  else if(type==='lux'){LUX_LOW=Math.max(100,Math.min(800,LUX_LOW+delta));q('#valLux').textContent=LUX_LOW+'lx';}
+  updateStatus();
+}
+function restoreAc(){
+  const d=S[pkg][scene]?.device,b=q('#acPowerBadge');
+  if(d&&!d.ac){q('#acFlowGroup').style.display='none';b.classList.remove('on');b.classList.add('off');b.querySelector('text').textContent='OFF';}
+  else{b.querySelector('text').textContent='ON';}
+  sd('Ac',d?.ac??false,(d?.ac??false)?'ON':'OFF');
+}
+function updateSvg(){
+  const t=q('#envTempSvg'),h=q('#envHumSvg'),b=q('#envBadge'),bt=b.querySelector('text');
+  if(t)t.textContent=envTemp.toFixed(1)+'°C';
+  if(h)h.textContent=envHum+'%';
+  if(autoMode&&autoAcOn){b.classList.add('on');b.classList.remove('off');bt.textContent='자동 ON';}
+  else if(autoMode){b.classList.remove('on');b.classList.remove('off');b.querySelector('rect').setAttribute('fill','rgba(9,16,31,.78)');bt.textContent='자동 대기';}
+  else{b.classList.remove('on');b.classList.add('off');bt.textContent='자동 OFF';}
+}
+function updateBar(){
+  const f=q('#tempBarFill'),l=q('#tempBarLabel');
+  const pct=Math.min(100,Math.max(0,((envTemp-16)/(32-16))*100));
+  if(f){f.style.width=pct+'%';f.style.background=envTemp>=TEMP_HIGH?'#fb7185':envTemp>=TEMP_HIGH-1?'#fbbf24':autoAcOn?'#38bdf8':'#6ee7b7';}
+  if(l)l.textContent=autoAcOn?`냉방 중 → ${TEMP_TARGET.toFixed(1)}°C`:`목표 ${TEMP_TARGET.toFixed(1)}°C`;
+}
+function updateStatus(){
+  const w=q('#autoStatus'),t=q('#autoStatusTxt');
+  if(!autoMode){w.className='auto-status';t.textContent='자동 제어 꺼짐';return;}
+  if(autoAcOn){w.className='auto-status active';t.textContent=`자동 냉방 작동 중 · 목표 ${TEMP_TARGET.toFixed(1)}°C`;}
+  else if(envTemp>=TEMP_HIGH-0.5){w.className='auto-status warn-state';t.textContent=`온도 감지 · ${TEMP_HIGH.toFixed(1)}°C 초과 시 자동 작동`;}
+  else{w.className='auto-status';t.textContent=`자동 제어 대기 중 · 기준 ${TEMP_HIGH.toFixed(1)}°C`;}
+}
+function tick(){
+  const acOn=autoAcOn||(S[pkg][scene]?.device?.ac===true);
+  envTemp=Math.max(20,Math.min(30,envTemp+(acOn?-0.12:0.09)+(Math.random()-.5)*.08));
+  envHum=Math.round(Math.max(35,Math.min(80,envHum+(Math.random()-.5)*.8)));
+  envLux=Math.round(Math.max(50,Math.min(900,envLux+(Math.random()-.45)*15)));
+  if(autoMode){
+    if(!autoAcOn&&envTemp>=TEMP_HIGH){
+      autoAcOn=true;
+      q('#acFlowGroup').style.display='block';
+      const b=q('#acPowerBadge');b.classList.add('on');b.classList.remove('off');b.querySelector('text').textContent='AUTO';
+      q('#devAc').classList.remove('off');q('#dotAc').classList.add('on');q('#stateAc').classList.add('on');q('#stateAc').classList.remove('off');q('#txtAc').textContent='자동 ON';
+    }
+    if(autoAcOn&&envTemp<=TEMP_TARGET){autoAcOn=false;restoreAc();}
+  }
+  const te=q('#envTemp'),he=q('#envHum'),le=q('#envLux');
+  if(te){te.textContent=envTemp.toFixed(1);te.className='ec-val'+(envTemp>=TEMP_HIGH?' hot':envTemp>=TEMP_HIGH-1?' warn':'');}
+  if(he){he.textContent=envHum;he.className='ec-val'+(envHum>HUM_HIGH?' warn':'');}
+  if(le){le.textContent=envLux;le.className='ec-val'+(envLux<LUX_LOW?' low':'');}
+  updateBar();updateSvg();updateStatus();
+}
+setInterval(tick,3000);tick();
 </script>
 </body>
 </html>
