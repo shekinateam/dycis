@@ -388,7 +388,24 @@ const S={
   }
 };
 
-let pkg='basic',scene='normal';
+let pkg='basic', scene='normal';
+
+/* ── 환경 센서 상태값 ──
+   apply() 안에서도 autoAcOn을 참조하므로,
+   apply() 실행보다 먼저 선언되어 있어야 합니다. */
+let autoMode = true;
+let autoAcOn = false;
+let settingsOpen = false;
+
+let envTemp = 24.0;
+let envHum = 56;
+let envLux = 420;
+
+let TEMP_HIGH = 26.5;
+let TEMP_TARGET = 23.5;
+let HUM_HIGH = 65;
+let LUX_LOW = 300;
+
 const q=s=>document.querySelector(s), qa=s=>[...document.querySelectorAll(s)];
 function setRoot(s){const m={'--room-glow':s.css.roomGlow,'--ceiling-light':s.css.ceiling,'--wall-light':s.css.walls,'--floor-light':s.css.floor,'--screen-color':s.css.screenColor,'--ambient':s.css.ambient,'--ac-unit-opacity':s.css.acUnitOpacity,'--ac-flow':s.css.acFlow,'--blind-opacity':s.css.blindOpacity,'--room-filter':s.css.filter};Object.entries(m).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));}
 function sg(g,on,t){g.classList.toggle('on',!!on);g.classList.toggle('off',!on);g.querySelector('text').textContent=t;}
@@ -405,13 +422,15 @@ function apply(){
   q('#kvPackage').textContent=p.label;q('#kvLight').textContent=s.light;q('#kvTemp').textContent=s.temp;
   q('#kvScreen').textContent=s.screen;q('#kvBlind').textContent=s.blind;q('#kvAir').textContent=s.air;q('#kvLift').textContent=s.lift;
   kv(q('#kvScreen'),d.screen);kv(q('#kvBlind'),d.blind==='올림');kv(q('#kvAir'),d.ac);kv(q('#kvLift'),d.lift);
-  sd('Ac',d.ac,d.ac?'ON':'OFF');sd('Blind',d.blind==='올림',d.blind);sd('Screen',d.screen,d.screen?'ON':'OFF');
+  sd('Blind',d.blind==='올림',d.blind);sd('Screen',d.screen,d.screen?'ON':'OFF');
   sd('Lift',d.lift,d.lift?'올림':'내림');sd('Pc',d.pc,d.pc?'ON':'OFF');sd('Audio',d.audio,d.audio?'ON':'OFF');
   q('#blindLeft').style.transform=s.blindLeft;q('#blindRight').style.transform=s.blindRight;
-  sg(q('#acPowerBadge'),d.ac,autoAcOn?'AUTO':d.ac?'ON':'OFF');
+  const acActive = d.ac || autoAcOn;
+  sg(q('#acPowerBadge'),acActive,autoAcOn?'AUTO':d.ac?'ON':'OFF');
   sg(q('#screenBadge'),d.screen,d.screen?'ON':'OFF');sg(q('#blindBadge'),d.blind==='올림',d.blind);
   sg(q('#liftBadge'),d.lift,d.lift?'올림':'내림');sg(q('#pcBadge'),d.pc,d.pc?'ON':'OFF');sg(q('#audioBadge'),d.audio,d.audio?'ON':'OFF');
-  q('#acFlowGroup').style.display=(d.ac||autoAcOn)?'block':'none';
+  q('#acFlowGroup').style.display=acActive?'block':'none';
+  sd('Ac',acActive,autoAcOn?'자동 ON':d.ac?'ON':'OFF');
   q('#pcGroup').style.opacity=d.pc?1:.38;q('#pcScreen').setAttribute('fill',d.pc?'#5b8cff':'#2a2e38');
   q('#audioGroup').style.opacity=d.audio?1:.38;qa('.audio-wave').forEach(w=>w.classList.toggle('off',!d.audio));
   q('#liftMonitorGroup').setAttribute('transform',`translate(0,${s.liftY})`);
@@ -426,10 +445,6 @@ qa('.scene-btn').forEach(b=>b.onclick=()=>{scene=b.dataset.scene;apply();});
 apply();
 
 /* ── 환경 센서 ── */
-let autoMode=true,autoAcOn=false,settingsOpen=false;
-let envTemp=24.0,envHum=56,envLux=420;
-let TEMP_HIGH=26.5,TEMP_TARGET=23.5,HUM_HIGH=65,LUX_LOW=300;
-
 function toggleAuto(){autoMode=!autoMode;q('#autoToggle').classList.toggle('on',autoMode);if(!autoMode&&autoAcOn){autoAcOn=false;restoreAc();}updateStatus();}
 function toggleSettings(){settingsOpen=!settingsOpen;q('#tsBody').classList.toggle('open',settingsOpen);q('#tsArrow').textContent=settingsOpen?'▴':'▾';}
 function adj(type,delta){
