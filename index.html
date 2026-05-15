@@ -313,7 +313,7 @@ button{font-family:inherit}
     <!-- 온도 바 -->
     <div class="temp-bar-wrap">
       <div class="temp-bar-label">
-        <span>16°C</span><span id="tempBarLabel">목표 23.5°C</span><span>32°C</span>
+        <span>16°C</span><span id="tempBarLabel">목표 24.0°C</span><span>32°C</span>
       </div>
       <div class="temp-bar-bg"><div class="temp-bar-fill" id="tempBarFill" style="width:50%;background:#6ee7b7"></div></div>
     </div>
@@ -324,10 +324,10 @@ button{font-family:inherit}
       </div>
       <div class="ts-body" id="tsBody">
         <div class="ts-row">
-          <span class="ts-label">냉방 기준 온도</span>
+          <span class="ts-label">냉방 시작 온도</span>
           <div class="ts-ctrl">
             <button class="ts-btn" onclick="adj('high',-0.5)">−</button>
-            <span class="ts-val" id="valHigh">26.5°C</span>
+            <span class="ts-val" id="valHigh">26.0°C</span>
             <button class="ts-btn" onclick="adj('high',0.5)">+</button>
           </div>
         </div>
@@ -335,7 +335,7 @@ button{font-family:inherit}
           <span class="ts-label">목표 온도</span>
           <div class="ts-ctrl">
             <button class="ts-btn" onclick="adj('target',-0.5)">−</button>
-            <span class="ts-val" id="valTarget">23.5°C</span>
+            <span class="ts-val" id="valTarget">24.0°C</span>
             <button class="ts-btn" onclick="adj('target',0.5)">+</button>
           </div>
         </div>
@@ -394,15 +394,15 @@ let pkg='basic', scene='normal';
    apply() 안에서도 autoAcOn을 참조하므로,
    apply() 실행보다 먼저 선언되어 있어야 합니다. */
 let autoMode = true;
-let autoAcOn = false;
+let autoClimateMode = 'idle'; // idle | cool | heat
 let settingsOpen = false;
 
 let envTemp = 24.0;
 let envHum = 56;
 let envLux = 420;
 
-let TEMP_HIGH = 26.5;
-let TEMP_TARGET = 23.5;
+let TEMP_HIGH = 26.0;
+let TEMP_TARGET = 24.0;
 let HUM_HIGH = 65;
 let LUX_LOW = 300;
 
@@ -425,12 +425,13 @@ function apply(){
   sd('Blind',d.blind==='올림',d.blind);sd('Screen',d.screen,d.screen?'ON':'OFF');
   sd('Lift',d.lift,d.lift?'올림':'내림');sd('Pc',d.pc,d.pc?'ON':'OFF');sd('Audio',d.audio,d.audio?'ON':'OFF');
   q('#blindLeft').style.transform=s.blindLeft;q('#blindRight').style.transform=s.blindRight;
-  const acActive = d.ac || autoAcOn;
-  sg(q('#acPowerBadge'),acActive,autoAcOn?'AUTO':d.ac?'ON':'OFF');
+  const climateActive = isClimateActive();
+  const acActive = d.ac || climateActive;
+  sg(q('#acPowerBadge'),acActive,climateActive?climateShortText():d.ac?'ON':'OFF');
   sg(q('#screenBadge'),d.screen,d.screen?'ON':'OFF');sg(q('#blindBadge'),d.blind==='올림',d.blind);
   sg(q('#liftBadge'),d.lift,d.lift?'올림':'내림');sg(q('#pcBadge'),d.pc,d.pc?'ON':'OFF');sg(q('#audioBadge'),d.audio,d.audio?'ON':'OFF');
   q('#acFlowGroup').style.display=acActive?'block':'none';
-  sd('Ac',acActive,autoAcOn?'자동 ON':d.ac?'ON':'OFF');
+  sd('Ac',acActive,climateActive?climateLabel():d.ac?'ON':'OFF');
   q('#pcGroup').style.opacity=d.pc?1:.38;q('#pcScreen').setAttribute('fill',d.pc?'#5b8cff':'#2a2e38');
   q('#audioGroup').style.opacity=d.audio?1:.38;qa('.audio-wave').forEach(w=>w.classList.toggle('off',!d.audio));
   q('#liftMonitorGroup').setAttribute('transform',`translate(0,${s.liftY})`);
@@ -445,62 +446,146 @@ qa('.scene-btn').forEach(b=>b.onclick=()=>{scene=b.dataset.scene;apply();});
 apply();
 
 /* ── 환경 센서 ── */
-function toggleAuto(){autoMode=!autoMode;q('#autoToggle').classList.toggle('on',autoMode);if(!autoMode&&autoAcOn){autoAcOn=false;restoreAc();}updateStatus();}
-function toggleSettings(){settingsOpen=!settingsOpen;q('#tsBody').classList.toggle('open',settingsOpen);q('#tsArrow').textContent=settingsOpen?'▴':'▾';}
+function isClimateActive(){return autoClimateMode==='cool'||autoClimateMode==='heat';}
+function climateShortText(){return autoClimateMode==='cool'?'COOL':autoClimateMode==='heat'?'HEAT':'ON';}
+function climateLabel(){return autoClimateMode==='cool'?'자동 냉방':autoClimateMode==='heat'?'자동 난방':'ON';}
+function coolStart(){return Math.max(TEMP_HIGH,TEMP_TARGET+0.5);}
+function heatStart(){return TEMP_TARGET-0.5;}
+function fmt(v){return (Math.round(v*10)/10).toFixed(1);}
+function syncSettingLabels(){
+  q('#valHigh').textContent=fmt(TEMP_HIGH)+'°C';
+  q('#valTarget').textContent=fmt(TEMP_TARGET)+'°C';
+  q('#valHum').textContent=HUM_HIGH+'%';
+  q('#valLux').textContent=LUX_LOW+'lx';
+}
+function toggleAuto(){
+  autoMode=!autoMode;
+  q('#autoToggle').classList.toggle('on',autoMode);
+  if(!autoMode&&isClimateActive()){
+    autoClimateMode='idle';
+    restoreAc();
+  }
+  updateStatus();updateSvg();updateBar();
+}
+function toggleSettings(){
+  settingsOpen=!settingsOpen;
+  q('#tsBody').classList.toggle('open',settingsOpen);
+  q('#tsArrow').textContent=settingsOpen?'▴':'▾';
+}
 function adj(type,delta){
-  if(type==='high'){TEMP_HIGH=Math.round(Math.max(24,Math.min(30,TEMP_HIGH+delta))*10)/10;q('#valHigh').textContent=TEMP_HIGH.toFixed(1)+'°C';}
-  else if(type==='target'){TEMP_TARGET=Math.round(Math.max(18,Math.min(TEMP_HIGH-1,TEMP_TARGET+delta))*10)/10;q('#valTarget').textContent=TEMP_TARGET.toFixed(1)+'°C';}
-  else if(type==='hum'){HUM_HIGH=Math.max(50,Math.min(85,HUM_HIGH+delta));q('#valHum').textContent=HUM_HIGH+'%';}
-  else if(type==='lux'){LUX_LOW=Math.max(100,Math.min(800,LUX_LOW+delta));q('#valLux').textContent=LUX_LOW+'lx';}
-  updateStatus();
+  if(type==='high'){
+    TEMP_HIGH=Math.round(Math.max(TEMP_TARGET+0.5,Math.min(30,TEMP_HIGH+delta))*10)/10;
+  }
+  else if(type==='target'){
+    TEMP_TARGET=Math.round(Math.max(18,Math.min(29.5,TEMP_TARGET+delta))*10)/10;
+    if(TEMP_HIGH<TEMP_TARGET+0.5) TEMP_HIGH=Math.round((TEMP_TARGET+0.5)*10)/10;
+  }
+  else if(type==='hum'){
+    HUM_HIGH=Math.max(50,Math.min(85,HUM_HIGH+delta));
+  }
+  else if(type==='lux'){
+    LUX_LOW=Math.max(100,Math.min(800,LUX_LOW+delta));
+  }
+  syncSettingLabels();updateStatus();updateBar();
 }
 function restoreAc(){
   const d=S[pkg][scene]?.device,b=q('#acPowerBadge');
-  if(d&&!d.ac){q('#acFlowGroup').style.display='none';b.classList.remove('on');b.classList.add('off');b.querySelector('text').textContent='OFF';}
-  else{b.querySelector('text').textContent='ON';}
+  if(d&&!d.ac){
+    q('#acFlowGroup').style.display='none';
+    b.classList.remove('on');b.classList.add('off');b.querySelector('text').textContent='OFF';
+  }
+  else{
+    q('#acFlowGroup').style.display='block';
+    b.classList.add('on');b.classList.remove('off');b.querySelector('text').textContent='ON';
+  }
   sd('Ac',d?.ac??false,(d?.ac??false)?'ON':'OFF');
 }
 function updateSvg(){
   const t=q('#envTempSvg'),h=q('#envHumSvg'),b=q('#envBadge'),bt=b.querySelector('text');
   if(t)t.textContent=envTemp.toFixed(1)+'°C';
   if(h)h.textContent=envHum+'%';
-  if(autoMode&&autoAcOn){b.classList.add('on');b.classList.remove('off');bt.textContent='자동 ON';}
-  else if(autoMode){b.classList.remove('on');b.classList.remove('off');b.querySelector('rect').setAttribute('fill','rgba(9,16,31,.78)');bt.textContent='자동 대기';}
-  else{b.classList.remove('on');b.classList.add('off');bt.textContent='자동 OFF';}
+  if(autoMode&&isClimateActive()){
+    b.classList.add('on');b.classList.remove('off');bt.textContent=climateLabel();
+  }
+  else if(autoMode){
+    b.classList.remove('on');b.classList.remove('off');b.querySelector('rect').setAttribute('fill','rgba(9,16,31,.78)');bt.textContent='자동 대기';
+  }
+  else{
+    b.classList.remove('on');b.classList.add('off');bt.textContent='자동 OFF';
+  }
 }
 function updateBar(){
   const f=q('#tempBarFill'),l=q('#tempBarLabel');
   const pct=Math.min(100,Math.max(0,((envTemp-16)/(32-16))*100));
-  if(f){f.style.width=pct+'%';f.style.background=envTemp>=TEMP_HIGH?'#fb7185':envTemp>=TEMP_HIGH-1?'#fbbf24':autoAcOn?'#38bdf8':'#6ee7b7';}
-  if(l)l.textContent=autoAcOn?`냉방 중 → ${TEMP_TARGET.toFixed(1)}°C`:`목표 ${TEMP_TARGET.toFixed(1)}°C`;
+  if(f){
+    f.style.width=pct+'%';
+    f.style.background=autoClimateMode==='cool'?'#38bdf8':autoClimateMode==='heat'?'#fbbf24':envTemp>=coolStart()?'#fb7185':envTemp<=heatStart()?'#38bdf8':'#6ee7b7';
+  }
+  if(l){
+    if(autoClimateMode==='cool') l.textContent=`냉방 중 → 목표 ${TEMP_TARGET.toFixed(1)}°C`;
+    else if(autoClimateMode==='heat') l.textContent=`난방 중 → 목표 ${TEMP_TARGET.toFixed(1)}°C`;
+    else l.textContent=`목표 ${TEMP_TARGET.toFixed(1)}°C`;
+  }
 }
 function updateStatus(){
   const w=q('#autoStatus'),t=q('#autoStatusTxt');
   if(!autoMode){w.className='auto-status';t.textContent='자동 제어 꺼짐';return;}
-  if(autoAcOn){w.className='auto-status active';t.textContent=`자동 냉방 작동 중 · 목표 ${TEMP_TARGET.toFixed(1)}°C`;}
-  else if(envTemp>=TEMP_HIGH-0.5){w.className='auto-status warn-state';t.textContent=`온도 감지 · ${TEMP_HIGH.toFixed(1)}°C 초과 시 자동 작동`;}
-  else{w.className='auto-status';t.textContent=`자동 제어 대기 중 · 기준 ${TEMP_HIGH.toFixed(1)}°C`;}
+  if(autoClimateMode==='cool'){
+    w.className='auto-status active';t.textContent=`자동 냉방 작동 중 · 목표 ${TEMP_TARGET.toFixed(1)}°C`;
+  }
+  else if(autoClimateMode==='heat'){
+    w.className='auto-status active';t.textContent=`자동 난방 작동 중 · 목표 ${TEMP_TARGET.toFixed(1)}°C`;
+  }
+  else if(envTemp>=coolStart()-0.3){
+    w.className='auto-status warn-state';t.textContent=`온도 높음 · ${coolStart().toFixed(1)}°C부터 냉방 작동`;
+  }
+  else if(envTemp<=heatStart()+0.3){
+    w.className='auto-status warn-state';t.textContent=`온도 낮음 · ${heatStart().toFixed(1)}°C 이하 난방 작동`;
+  }
+  else{
+    w.className='auto-status';t.textContent=`자동 제어 대기 중 · 목표 ${TEMP_TARGET.toFixed(1)}°C`;
+  }
 }
 function tick(){
-  const acOn=autoAcOn||(S[pkg][scene]?.device?.ac===true);
-  envTemp=Math.max(20,Math.min(30,envTemp+(acOn?-0.12:0.09)+(Math.random()-.5)*.08));
+  if(autoMode){
+    if(autoClimateMode==='idle'){
+      if(envTemp>=coolStart()) autoClimateMode='cool';
+      else if(envTemp<=heatStart()) autoClimateMode='heat';
+    }
+    else if(autoClimateMode==='cool'&&envTemp<=TEMP_TARGET){
+      autoClimateMode='idle';restoreAc();
+    }
+    else if(autoClimateMode==='heat'&&envTemp>=TEMP_TARGET){
+      autoClimateMode='idle';restoreAc();
+    }
+  }
+
+  let delta=0;
+  if(autoClimateMode==='cool') delta=-0.18;
+  else if(autoClimateMode==='heat') delta=0.18;
+  else delta=(24.2-envTemp)*0.025;
+
+  envTemp=Math.max(16,Math.min(32,envTemp+delta+(Math.random()-.5)*.06));
   envHum=Math.round(Math.max(35,Math.min(80,envHum+(Math.random()-.5)*.8)));
   envLux=Math.round(Math.max(50,Math.min(900,envLux+(Math.random()-.45)*15)));
-  if(autoMode){
-    if(!autoAcOn&&envTemp>=TEMP_HIGH){
-      autoAcOn=true;
-      q('#acFlowGroup').style.display='block';
-      const b=q('#acPowerBadge');b.classList.add('on');b.classList.remove('off');b.querySelector('text').textContent='AUTO';
-      q('#devAc').classList.remove('off');q('#dotAc').classList.add('on');q('#stateAc').classList.add('on');q('#stateAc').classList.remove('off');q('#txtAc').textContent='자동 ON';
-    }
-    if(autoAcOn&&envTemp<=TEMP_TARGET){autoAcOn=false;restoreAc();}
-  }
+
+  const d=S[pkg][scene]?.device;
+  const climateActive=isClimateActive();
+  const acActive=(d?.ac===true)||climateActive;
+  q('#acFlowGroup').style.display=acActive?'block':'none';
+  sg(q('#acPowerBadge'),acActive,climateActive?climateShortText():d?.ac?'ON':'OFF');
+  sd('Ac',acActive,climateActive?climateLabel():d?.ac?'ON':'OFF');
+
   const te=q('#envTemp'),he=q('#envHum'),le=q('#envLux');
-  if(te){te.textContent=envTemp.toFixed(1);te.className='ec-val'+(envTemp>=TEMP_HIGH?' hot':envTemp>=TEMP_HIGH-1?' warn':'');}
+  if(te){
+    te.textContent=envTemp.toFixed(1);
+    te.className='ec-val'+(envTemp>=coolStart()?' hot':envTemp<=heatStart()?' low':envTemp>=coolStart()-0.5?' warn':'');
+  }
   if(he){he.textContent=envHum;he.className='ec-val'+(envHum>HUM_HIGH?' warn':'');}
   if(le){le.textContent=envLux;le.className='ec-val'+(envLux<LUX_LOW?' low':'');}
   updateBar();updateSvg();updateStatus();
 }
+syncSettingLabels();
 setInterval(tick,3000);tick();
 </script>
 </body>
